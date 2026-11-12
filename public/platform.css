@@ -1,0 +1,240 @@
+/* THE LAST PLATFORM: the frame.
+   The platform's own voice is one mono face on the void. Worlds bring their own marks:
+   see "the marks" below, one block per world. */
+
+:root{
+  --void:#020408;
+  --white:#F3F6FF;
+  --dim:#8FA6C8;
+  --faint:#4A5D78;
+  --hair:rgba(143,166,200,.18);
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Monaco,Consolas,monospace;
+  --gutter:clamp(22px,6vw,88px);
+  --railx:calc(var(--gutter) + 3px);       /* where the rail runs */
+  --inset:clamp(26px,5vw,64px);            /* how far worlds stand off the rail */
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--void)}
+body{
+  margin:0;color:var(--white);background:var(--void);
+  font-family:var(--mono);font-size:14px;line-height:1.85;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+p{margin:0}
+:focus-visible{outline:1px solid rgba(150,190,255,.8);outline-offset:6px;border-radius:2px}
+.skip{position:absolute;left:-999px}
+.skip:focus{left:var(--gutter);top:12px;z-index:20;background:var(--void);padding:6px 10px}
+
+/* ---------- the field ---------- */
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.sky span{position:absolute;inset:-10%}
+.sky .s1{
+  background-image:
+    radial-gradient(1.3px 1.3px at 20% 30%,rgba(255,255,255,.8),transparent),
+    radial-gradient(1.1px 1.1px at 70% 60%,rgba(255,255,255,.65),transparent),
+    radial-gradient(1.5px 1.5px at 45% 80%,rgba(255,255,255,.55),transparent),
+    radial-gradient(1.1px 1.1px at 85% 20%,rgba(255,255,255,.7),transparent);
+  background-size:340px 280px;opacity:.55;
+}
+.sky .s2{
+  background-image:
+    radial-gradient(1px 1px at 30% 50%,rgba(180,205,255,.6),transparent),
+    radial-gradient(1px 1px at 80% 15%,rgba(180,205,255,.45),transparent),
+    radial-gradient(1px 1px at 55% 70%,rgba(180,205,255,.5),transparent);
+  background-size:190px 160px;opacity:.35;
+}
+.sky .s3{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(90,140,230,.10),transparent 55%),
+    radial-gradient(circle at 82% 78%,rgba(150,110,210,.07),transparent 55%);
+}
+.top,main,footer{position:relative;z-index:1}
+
+/* ---------- the platform's own labels ---------- */
+.top{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:clamp(20px,4vh,36px) var(--gutter);
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);
+}
+.top nav{display:flex;gap:clamp(16px,4vw,36px)}
+.top a{text-decoration:none;padding:6px 0}
+.top a:hover{color:var(--white)}
+
+/* ---------- the threshold ---------- */
+.threshold{
+  min-height:calc(100svh - 80px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:8vh var(--gutter) 12vh;
+}
+.wordmark{
+  margin:0;font-weight:500;text-transform:uppercase;
+  font-size:clamp(34px,10.4vw,132px);line-height:1.08;letter-spacing:.16em;
+  color:transparent;-webkit-text-stroke:1px rgba(143,166,200,.42);
+}
+.wordmark span{display:block;white-space:nowrap}
+.wordmark b{
+  font-weight:500;color:var(--white);-webkit-text-stroke:0;
+  text-shadow:0 0 18px rgba(170,205,255,.75),0 0 60px rgba(120,170,255,.45);
+}
+.claim{
+  margin-top:clamp(28px,6vh,56px);
+  font-size:clamp(15px,2vw,20px);letter-spacing:.12em;color:var(--white);
+}
+.ground{margin-top:18px;max-width:54ch;color:#C3CFE6}
+
+/* ---------- the rail ---------- */
+.rail{position:relative;padding:0 var(--gutter) 0 calc(var(--railx) + var(--inset))}
+.rail-line{
+  position:absolute;top:0;bottom:0;left:var(--railx);width:1px;overflow:hidden;
+  /* the signal runs out before the platform does */
+  background:linear-gradient(180deg,transparent 0,var(--hair) 6%,var(--hair) 80%,transparent 100%);
+}
+.rail-line{overflow:visible}
+.pulse{
+  position:absolute;left:-1px;top:0;width:3px;height:220px;
+  background:linear-gradient(180deg,transparent,rgba(143,166,200,.5) 35%,var(--white) 50%,rgba(143,166,200,.5) 65%,transparent);
+  filter:blur(.4px);opacity:0;
+  animation:carry var(--carry,14s) linear infinite;
+}
+@keyframes carry{
+  0%  {transform:translateY(-220px);opacity:0}
+  6%  {opacity:1}
+  74% {opacity:1}
+  94% {opacity:0}
+  100%{transform:translateY(var(--carry-end,100vh));opacity:0}
+}
+
+/* ---------- an emergence ---------- */
+.emergence{position:relative;padding:clamp(48px,11vh,120px) 0;scroll-margin-top:24px}
+.node{
+  position:absolute;left:calc(-1 * var(--inset) - 3px);
+  width:7px;height:7px;border-radius:50%;background:var(--dim);
+}
+.emergence .node{top:calc(clamp(48px,11vh,120px) + 6px)}
+.node.open{background:var(--void);border:1px solid var(--dim)}
+.inscription{
+  font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--dim);
+  margin-bottom:clamp(18px,3vw,28px);
+}
+.emergence h2{margin:0;font-size:inherit;font-weight:inherit}
+.line{max-width:50ch;margin-top:clamp(22px,3vw,34px);color:#C3CFE6}
+.facts{list-style:none;margin:18px 0 0;padding:0;color:var(--dim);font-size:12px}
+.terms{margin-top:18px;max-width:50ch;font-size:12px;color:var(--dim)}
+.terms b{font-weight:400;color:var(--faint);letter-spacing:.2em;text-transform:uppercase;font-size:10px;display:block}
+.doors{display:flex;flex-wrap:wrap;gap:14px 34px;margin-top:clamp(22px,3vw,32px)}
+.door{
+  font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+  text-decoration:none;color:var(--white);
+  padding:10px 0 5px;border-bottom:1px solid rgba(243,246,255,.3);
+  transition:border-color .4s ease;
+}
+a.door:hover,a.door:focus-visible{border-bottom-color:var(--white)}
+.door.shut{color:var(--faint);border-bottom-color:transparent;border-bottom-style:dashed}
+.door.shut em{font-style:normal;letter-spacing:.2em}
+
+/* catching the carrier: each world brightens as the pulse reaches it */
+.live .node{animation:catchNode var(--carry,14s) linear infinite var(--catch,0s)}
+.live .mark{animation:catchMark var(--carry,14s) linear infinite var(--catch,0s)}
+@keyframes catchNode{
+  0%,86%,100%{background:var(--dim);box-shadow:none}
+  4%{background:var(--white);box-shadow:0 0 14px 3px rgba(200,225,255,.55)}
+  14%{background:var(--dim);box-shadow:none}
+}
+@keyframes catchMark{
+  0%,86%,100%{filter:drop-shadow(0 0 0 rgba(150,190,255,0))}
+  4%{filter:drop-shadow(0 0 24px rgba(150,190,255,.5))}
+  14%{filter:drop-shadow(0 0 0 rgba(150,190,255,0))}
+}
+
+/* ---------- the unformed end of the rail ---------- */
+.unformed{position:relative;padding:clamp(40px,9vh,90px) 0 clamp(120px,24vh,240px)}
+.unformed .node{top:calc(clamp(40px,9vh,90px) + 8px)}
+.codex{
+  max-width:30ch;font-size:10px;letter-spacing:.24em;line-height:2.4;
+  text-transform:uppercase;color:var(--dim);opacity:.6;
+}
+.codex.live{animation:catchCodex var(--carry,14s) linear infinite var(--catch,0s)}
+@keyframes catchCodex{
+  0%,88%,100%{opacity:.6;color:var(--dim)}
+  5%{opacity:1;color:var(--white)}
+  22%{opacity:.6;color:var(--dim)}
+}
+
+/* ---------- how it holds, and sending word ---------- */
+.holds,.word{padding:clamp(48px,10vh,110px) var(--gutter);border-top:1px solid var(--hair)}
+.holds h2,.word h2{
+  margin:0 0 22px;font-size:10px;font-weight:400;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--dim);
+}
+.holds ul{list-style:none;margin:0;padding:0;display:grid;gap:26px clamp(28px,5vw,64px);grid-template-columns:repeat(3,1fr)}
+.holds li{color:#C3CFE6;max-width:38ch}
+.word p{max-width:52ch;color:#C3CFE6}
+.word .quiet{margin-top:22px;color:var(--faint)}
+.signup{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 26px;margin-top:28px}
+.signup label{display:block;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.signup .field{flex:1 1 260px;max-width:420px}
+.signup input[type=email]{
+  width:100%;background:none;border:0;border-bottom:1px solid rgba(143,166,200,.5);
+  color:var(--white);font:inherit;font-size:16px;padding:10px 0;border-radius:0;
+}
+.signup input[type=email]:focus{outline:none;border-bottom-color:var(--white)}
+.signup button{
+  background:none;border:1px solid rgba(243,246,255,.45);color:var(--white);
+  font:inherit;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+  padding:13px 22px;cursor:pointer;transition:background .3s ease,color .3s ease;
+}
+.signup button:hover{background:var(--white);color:var(--void)}
+.signup button[disabled]{opacity:.5;cursor:default}
+.signup .trap{position:absolute;left:-9999px}
+.said{margin-top:18px;min-height:1.85em;color:var(--dim)}
+
+footer{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;
+  padding:34px var(--gutter) 44px;border-top:1px solid var(--hair);
+  font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);
+}
+footer a{color:var(--dim)}
+
+/* ============================================================
+   THE MARKS: one block per world. A world's mark is its own.
+   ============================================================ */
+.mark{display:block;width:max-content;max-width:100%}
+
+/* plain: for a world that has not brought a mark yet */
+.mark-plain{font-size:clamp(28px,6vw,64px);letter-spacing:.08em;line-height:1.1}
+
+/* MOONLINE */
+.mark-moonline{position:relative;line-height:.9;transform:skewX(-11deg);transform-origin:left center}
+.mark-moonline .word-of{
+  position:relative;z-index:2;display:block;
+  font-family:"Arial Black","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:900;
+  font-size:clamp(44px,12.5vw,128px);letter-spacing:-.02em;
+  background:linear-gradient(176deg,#FFFFFF 0%,#EAF0FF 42%,#B7C2DB 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.mark-moonline .crater{
+  position:absolute;z-index:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 34%,rgba(255,255,255,.30) 0%,rgba(150,165,195,.10) 34%,rgba(6,10,20,.55) 66%,rgba(6,10,20,0) 78%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.35),inset 0 -3px 6px rgba(0,0,0,.5);
+  mix-blend-mode:screen;
+}
+
+/* THE BUILDER: a grey box with something in it */
+.mark-builder{
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;
+  font-size:clamp(26px,6.4vw,60px);letter-spacing:-.02em;line-height:1;
+  color:#14161A;background:#9B9D98;
+  padding:.5em .6em 1.5em;
+}
+
+@media (max-width:760px){
+  .holds ul{grid-template-columns:1fr}
+  .wordmark{letter-spacing:.1em}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .pulse,.live .node,.live .mark,.codex.live{animation:none}
+  *{transition-duration:.01ms !important}
+}
