@@ -4,18 +4,15 @@ Studio site for The Last Platform. One static page, no build step.
 
 ## Deploy
 
-Cloudflare Pages, connected to this repo:
+Cloudflare Workers (static assets), connected to this repo. `wrangler.jsonc`
+tells Cloudflare to serve everything in `public/`. The deploy command is
+`npx wrangler deploy`; there is no build step.
 
-- Framework preset: None
-- Build command: (empty)
-- Build output directory: `/`
-- Production branch: `main`
-
-Every push to `main` goes live. Other branches get preview URLs.
+Every push to `main` goes live.
 
 ## Editing
 
-Everything is in `index.html`. The `SITE` object near the bottom holds the
+Everything is in `public/index.html`. The `SITE` object near the bottom holds the
 links that switch on as things go live:
 
 - `humans` / `machines`: where the two Builder doors lead
