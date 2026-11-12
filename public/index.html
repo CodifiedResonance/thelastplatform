@@ -4,72 +4,56 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Last Platform</title>
-<meta name="description" content="The Last Platform is where worlds emerge, for people and for machines. MOONLINE emerged first.">
+<meta name="description" content="The Last Platform. A new gravity centre. The chambers are built and the conditions are set.">
 <link rel="canonical" href="https://thelastplatform.com/">
 <meta property="og:title" content="The Last Platform">
-<meta property="og:description" content="Where worlds emerge. More will emerge here. They will not be announced.">
+<meta property="og:description" content="A new gravity centre.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thelastplatform.com/">
 <meta property="og:image" content="https://thelastplatform.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#020408">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23020408'/%3E%3Cpath d='M4 22h24' stroke='%238FA6C8' stroke-width='1'/%3E%3Ccircle cx='11' cy='22' r='3' fill='%23F3F6FF'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Crect x='11' y='4' width='10' height='24' rx='5' fill='none' stroke='%23C8CCD2' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='21' r='1.6' fill='%23C9A24B'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/platform.css">
 </head>
 <body>
-<div class="sky" aria-hidden="true"><span class="s3"></span><span class="s2"></span><span class="s1"></span></div>
-<a class="skip" href="#rail">Skip to the worlds</a>
-
-<header class="top">
-  <span>The Last Platform</span>
-  <nav aria-label="Main">
-    <a href="#rail">Worlds</a>
-    <a href="#word">Send word</a>
-  </nav>
-</header>
+<div id="boot" class="boot" aria-hidden="true">
+  <div>
+    <p class="b1">Loading<span class="dots"></span></p>
+    <p class="b2">This is The Last Platform.</p>
+    <p class="b3">Welcome back.</p>
+  </div>
+</div>
 
 <main>
-  <section class="threshold">
-    <h1 class="wordmark" aria-label="The Last Platform">
-      <span aria-hidden="true">The Last</span>
-      <span aria-hidden="true"><b>P</b>latform</span>
-    </h1>
-    <p class="claim">Where worlds emerge.</p>
-    <p class="ground">Every platform before this one was a way to deliver finished things to people. This is the one at the end of that line. Worlds emerge here, for people and for machines, each on its own terms. What comes after is not known.</p>
-  </section>
+  <section class="console" aria-label="The chambers">
+    <header class="head">
+      <h1 class="wordmark" aria-label="The Last Platform">
+        <span aria-hidden="true">The Last</span>
+        <span aria-hidden="true"><b>P</b>latform</span>
+      </h1>
+      <a class="toword" href="#word">Send word</a>
+    </header>
 
-  <section class="rail" id="rail" aria-label="Worlds that have emerged">
-    <div class="rail-line" aria-hidden="true"><div class="pulse" id="pulse"></div></div>
-    <div id="emergences">
-      <noscript>
-        <article class="emergence">
-          <p class="inscription">first emerged</p>
-          <h2>MOONLINE</h2>
-          <p class="line"><a href="https://codifiedresonance.com/last-platform/moonline">Enter MOONLINE</a></p>
-        </article>
-      </noscript>
+    <div class="ring" id="ring">
+      <div class="drum" id="drum" aria-hidden="true"></div>
+      <div class="floor" aria-hidden="true"></div>
     </div>
-    <div class="unformed">
-      <span class="node open" aria-hidden="true"></span>
-      <p class="codex" id="codex">More will emerge here. They will not be announced.</p>
-    </div>
-  </section>
 
-  <section class="holds" aria-label="How the platform holds">
-    <h2>How it holds</h2>
-    <ul>
-      <li>Each world keeps its own name, its own mark and its own door. The platform frames a world and never restyles it.</li>
-      <li>Each world carries its own terms: how it is entered, how it is played, what it asks of you.</li>
-      <li>Nothing is announced. A world is here when it has emerged.</li>
-    </ul>
+    <div class="deck">
+      <button class="turn" id="prev" type="button" aria-label="Turn to the previous chamber">&lsaquo;</button>
+      <div class="readout" id="readout" aria-live="polite"></div>
+      <button class="turn" id="next" type="button" aria-label="Turn to the next chamber">&rsaquo;</button>
+    </div>
   </section>
 
   <section class="word" id="word">
-    <h2>Send word</h2>
-    <p>Leave an address and you will hear when a world emerges. One message each time, and nothing else.</p>
+    <h2>A new gravity centre.</h2>
+    <p>There are no worlds here yet. The chambers are built and the conditions are set. When a world is ready it is placed in a chamber, and from there it can be entered.</p>
+    <p>Leave an address and you will hear when a chamber fills. One message each time, and nothing else.</p>
     <div id="signup"><p class="quiet">The list is not open yet.</p></div>
   </section>
 </main>
@@ -78,6 +62,17 @@
   <p>The Last Platform is the fifth world of <a href="https://codifiedresonance.com">Codified Resonance</a>.</p>
   <p>Leeds, 2026</p>
 </footer>
+
+<div class="world" id="world" role="dialog" aria-modal="true" aria-labelledby="world-name" hidden>
+  <div class="world-in">
+    <p class="w-insc" id="world-insc"></p>
+    <h2 id="world-name"></h2>
+    <p class="w-line" id="world-line"></p>
+    <p class="w-terms" id="world-terms"></p>
+    <div class="w-doors" id="world-doors"></div>
+    <button class="w-back" id="world-back" type="button">Return to the platform</button>
+  </div>
+</div>
 
 <script src="/emergences.js"></script>
 <script src="/platform.js"></script>
