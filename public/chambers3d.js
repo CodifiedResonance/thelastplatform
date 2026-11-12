@@ -138,18 +138,29 @@ function start() {
   }
 
   /* a world's name, held in the liquid */
-  function etchMaterial(text) {
-    const c = document.createElement("canvas"); c.width = 512; c.height = 128;
-    const x = c.getContext("2d");
-    x.font = "500 76px 'IBM Plex Mono', ui-monospace, Menlo, monospace";
-    x.textAlign = "center"; x.textBaseline = "middle";
-    try { x.letterSpacing = "14px"; } catch (e) {}
-    x.fillStyle = "#fff"; x.fillText(text, 256, 66);
-    const t = new THREE.CanvasTexture(c); t.anisotropy = 8;
-    /* the same metal, cut matte: it only shows where the light catches it */
-    return new THREE.MeshPhysicalMaterial({ color: 0x24262a, metalness: 1, roughness: 0.82, alphaMap: t, transparent: true,
-      opacity: 0.6, depthWrite: false, bumpMap: t, bumpScale: -1.2,
-      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  /* the number is cut into the cap itself: the cap's own metal, with a chiselled groove
+     (a height map the light falls into) and a darker cavity at the bottom of the cut */
+  function engraved(text) {
+    const W = 512, H = 384, U0 = 0.044;            /* the strip of the cap's face this canvas covers */
+    const span = (W / H) * CAPH / (2 * Math.PI * TR * 1.26);
+    const glyphs = (fill, blur) => {
+      const c = document.createElement("canvas"); c.width = W; c.height = H;
+      const x = c.getContext("2d");
+      x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+      x.font = "400 104px 'IBM Plex Mono', ui-monospace, Menlo, monospace";
+      x.textAlign = "center"; x.textBaseline = "middle";
+      try { x.letterSpacing = "10px"; } catch (e) {}
+      x.filter = "blur(" + blur + "px)"; x.fillStyle = fill; x.fillText(text, W / 2, H / 2 + 6);
+      const t = new THREE.CanvasTexture(c);
+      t.repeat.set(1 / span, 1); t.offset.set(-U0 / span, 0); t.anisotropy = 8;
+      return t;
+    };
+    const m = metal.clone();
+    m.bumpMap = glyphs("#000", 2.2); m.bumpScale = 2.0;      /* the V of the cut */
+    const cav = glyphs("#a2a5aa", 1.2); cav.colorSpace = THREE.SRGBColorSpace;
+    m.map = cav;                                               /* a touch less reflective in the groove */
+    m.color.set(0xffffff).multiply(new THREE.Color(0x24262a));
+    return m;
   }
   function nameTexture(text, blurred) {
     const c = document.createElement("canvas"); c.width = 256; c.height = 1024;
@@ -216,7 +227,7 @@ function start() {
 
     /* the apparatus */
     const hard = new THREE.Group();
-    const top = new THREE.Mesh(capGeo, metal); top.position.y = HALF - 0.14 + CAPH / 2;
+    const top = new THREE.Mesh(capGeo, [engraved(String(i + 1).padStart(2, "0")), metal, metal]); top.position.y = HALF - 0.14 + CAPH / 2;
     const base = new THREE.Mesh(capGeo, metal); base.position.y = -(HALF - 0.14 + CAPH / 2);
     const lipT = new THREE.Mesh(lipGeo, steel); lipT.position.y = HALF - 0.14;
     const lipB = new THREE.Mesh(lipGeo, steel); lipB.position.y = -(HALF - 0.14);
@@ -224,11 +235,6 @@ function start() {
     const r1 = new THREE.Mesh(rodGeo, steel); r1.position.set(-0.47, 0, -0.5);
     const r2 = new THREE.Mesh(rodGeo, steel); r2.position.set(0.47, 0, -0.5);
     hard.add(top, base, lipT, lipB, foot, r1, r2);
-    /* the number, etched into the face of the top cap */
-    const etch = new THREE.Mesh(
-      new THREE.CylinderGeometry(TR * 1.26 + 0.004, TR * 1.26 + 0.004, CAPH * 0.5, 40, 1, true, 0.12, 0.8),
-      etchMaterial(String(i + 1).padStart(2, "0")));
-    etch.position.y = top.position.y; etch.renderOrder = 3; hard.add(etch);
     const hose = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, HALF + CAPH - 0.16, -0.2), new THREE.Vector3(0, HALF + CAPH + 0.5, -0.5),
       new THREE.Vector3(0, HALF + CAPH + 0.75, -1.2), new THREE.Vector3(0, HALF + CAPH + 0.7, -RING + 0.3)]), 28, 0.07, 10), dark);
