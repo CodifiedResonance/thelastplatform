@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Last Platform | Game studio, Leeds</title>
+<meta name="description" content="The Last Platform is a game studio from Leeds. Our worlds begin as a grey box with one person in it. The Builder and RESET are open to humans and machines.">
+<meta property="og:title" content="The Last Platform">
+<meta property="og:description" content="Start with nothing. Worlds built by whoever turns up, human or machine.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.thelastplatform.com/">
+<meta name="theme-color" content="#9B9D98">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%239B9D98'/%3E%3Crect x='6' y='6' width='20' height='20' fill='none' stroke='%2314161A' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='17' r='2.5' fill='%2314161A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --grey:#9B9D98;      /* the grey screen every world starts as */
+  --grey-deep:#7E807B;
+  --ink:#14161A;
+  --chalk:#F3F4EF;
+  --human:#E4572E;     /* the human door */
+  --machine:#2B45F5;   /* the machine door */
+  --gold:#C8A02B;      /* RESET's digital gold */
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Newsreader",Georgia,serif;
+  --measure:62ch;
+  --gutter:clamp(1.25rem,5vw,4.5rem);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--chalk);color:var(--ink);font-family:var(--body);font-size:clamp(1.0625rem,.35vw + 1rem,1.25rem);line-height:1.6}
+h1,h2,h3{font-family:var(--display);line-height:1.02;margin:0;letter-spacing:-.02em}
+p{margin:0 0 1em;max-width:var(--measure)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--machine);outline-offset:3px}
+.skip{position:absolute;left:-999px}
+.skip:focus{left:1rem;top:1rem;background:var(--chalk);padding:.5rem 1rem;z-index:10}
+
+/* top bar */
+.bar{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:1.1rem var(--gutter);font-family:var(--display);font-weight:600}
+.bar nav{display:flex;gap:clamp(.9rem,2.5vw,2rem);flex-wrap:wrap}
+.bar a{text-decoration:none}
+.bar a:hover{text-decoration:underline;text-underline-offset:.25em}
+
+/* hero: the grey screen */
+.hero{background:var(--grey);min-height:100svh;display:flex;flex-direction:column}
+.stage{flex:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(1.5rem,5vw,5rem);align-items:center;padding:1rem var(--gutter) clamp(2rem,6vh,4rem)}
+.hero h1{font-size:clamp(3.25rem,10.5vw,10rem);font-weight:800;letter-spacing:-.045em;line-height:.88}
+.hero .lede{margin-top:1.6rem;font-size:1.15em;max-width:34ch}
+.box-wrap{width:100%;max-width:34rem;justify-self:end}
+.box{position:relative;aspect-ratio:1;border:3px solid var(--ink);overflow:hidden;background:var(--grey)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:9%;border-top:3px solid var(--ink)}
+.things{position:absolute;left:4%;right:4%;bottom:9%;display:flex;flex-wrap:wrap-reverse;align-items:flex-end;gap:6px;max-height:80%}
+.thing{font-family:var(--display);font-weight:600;font-size:clamp(.8rem,1.6vw,1rem);padding:.55em .7em;color:var(--chalk);max-width:100%;overflow-wrap:anywhere;animation:land .32s cubic-bezier(.3,1.5,.5,1)}
+@keyframes land{from{transform:translateY(-140%);opacity:0}}
+.avatar{position:absolute;bottom:9%;left:8%;width:7%;animation:walk 16s linear infinite alternate}
+.avatar i{display:block;background:var(--ink)}
+.avatar .head{width:56%;aspect-ratio:1;border-radius:50%;margin:0 auto 8%}
+.avatar .body{width:100%;aspect-ratio:1/1.5;border-radius:40% 40% 0 0}
+@keyframes walk{to{left:84%}}
+.says{position:absolute;top:6%;left:6%;right:6%;font-family:var(--display);font-weight:600;font-size:clamp(1rem,2.2vw,1.35rem);min-height:1.4em}
+.make{display:flex;margin-top:.9rem;border:3px solid var(--ink);background:var(--chalk)}
+.make label{position:absolute;left:-999px}
+.make input{flex:1;min-width:0;border:0;background:none;font:inherit;font-family:var(--display);padding:.85rem 1rem;color:var(--ink)}
+.make input:focus{outline:none}
+.make:focus-within{outline:3px solid var(--machine);outline-offset:3px}
+.make button{border:0;border-left:3px solid var(--ink);background:var(--ink);color:var(--chalk);font:inherit;font-family:var(--display);font-weight:600;padding:0 1.3rem;cursor:pointer}
+.make button:hover{background:var(--machine)}
+.hint{font-size:.85em;margin:.6rem 0 0;max-width:none}
+
+/* sections */
+section{padding:clamp(4rem,11vw,9rem) var(--gutter)}
+h2{font-size:clamp(2.2rem,6vw,5rem);font-weight:800;letter-spacing:-.035em;max-width:16ch}
+.intro{margin-top:1.4rem;font-size:1.1em}
+
+/* worlds */
+.doors{display:grid;grid-template-columns:1fr 1fr;margin-top:clamp(2rem,5vw,4rem);border:3px solid var(--ink)}
+.door{padding:clamp(1.5rem,4vw,3.5rem);color:var(--chalk);display:flex;flex-direction:column;min-height:26rem}
+.door.human{background:var(--human)}
+.door.machine{background:var(--machine);border-left:3px solid var(--ink)}
+.door h3{font-size:clamp(1.8rem,3.6vw,3rem);font-weight:800}
+.door p{margin-top:1rem}
+.door .status{font-family:var(--display);font-weight:600;margin-top:auto;padding-top:2rem}
+.btn{display:inline-block;font-family:var(--display);font-weight:600;text-decoration:none;padding:.8rem 1.25rem;border:3px solid currentColor;margin-top:1rem;align-self:flex-start}
+.btn:hover{background:var(--chalk);color:var(--ink);border-color:var(--chalk)}
+.reset{background:var(--ink);color:var(--chalk)}
+.reset h2 span{color:var(--gold)}
+.rules{list-style:none;padding:0;margin:clamp(2rem,5vw,3.5rem) 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3rem)}
+.rules li{border-top:3px solid var(--gold);padding-top:1rem}
+.rules strong{display:block;font-family:var(--display);font-size:1.35em;line-height:1.1;margin-bottom:.5rem}
+
+/* founding access */
+.steps{counter-reset:s;list-style:none;padding:0;margin:clamp(2rem,5vw,4rem) 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:3px solid var(--ink)}
+.steps li{counter-increment:s;padding:clamp(1.25rem,3vw,2.25rem)}
+.steps li + li{border-left:3px solid var(--ink)}
+.steps li::before{content:counter(s);font-family:var(--display);font-weight:800;font-size:3.2rem;line-height:1;display:block;margin-bottom:.8rem}
+.steps h3{font-size:1.5rem;font-weight:800;margin-bottom:.6rem}
+.price{font-family:var(--display);font-weight:600;margin:.4rem 0 0}
+.plots{width:100%;border-collapse:collapse;margin-top:clamp(2rem,5vw,3.5rem);font-family:var(--display)}
+.plots caption{text-align:left;font-weight:800;font-size:1.5rem;padding-bottom:.8rem}
+.plots th,.plots td{text-align:left;padding:.9rem .8rem .9rem 0;border-top:2px solid var(--ink);vertical-align:top}
+.plots th{font-weight:600}
+.plots td.n{white-space:nowrap}
+.plots td.d{font-family:var(--body)}
+.note{margin-top:1.5rem;font-size:.92em}
+.cta{display:inline-block;margin-top:1.5rem;background:var(--ink);color:var(--chalk);font-family:var(--display);font-weight:600;padding:1rem 1.5rem;text-decoration:none;border:3px solid var(--ink)}
+a.cta:hover{background:var(--chalk);color:var(--ink)}
+.cta[aria-disabled="true"]{background:none;color:var(--ink)}
+
+/* studio */
+.studio{background:var(--grey)}
+.studio .cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,5rem);margin-top:clamp(1.5rem,4vw,3rem)}
+
+footer{background:var(--ink);color:var(--chalk);padding:2.5rem var(--gutter);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-family:var(--display)}
+footer p{margin:0}
+
+@media (max-width:820px){
+  .stage{grid-template-columns:1fr}
+  .box-wrap{justify-self:start;max-width:26rem}
+  .doors,.rules,.steps,.studio .cols{grid-template-columns:1fr}
+  .door.machine{border-left:0;border-top:3px solid var(--ink)}
+  .steps li + li{border-left:0;border-top:3px solid var(--ink)}
+  .door{min-height:0}
+  .plots thead{display:none}
+  .plots tr{display:block;border-top:2px solid var(--ink);padding:.8rem 0}
+  .plots th,.plots td{display:block;border:0;padding:.1rem 0}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .avatar,.thing{animation:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#worlds">Skip to the worlds</a>
+
+<header class="hero">
+  <div class="bar">
+    <span>The Last Platform</span>
+    <nav aria-label="Main">
+      <a href="#worlds">Worlds</a>
+      <a href="#founding">Founding access</a>
+      <a href="#studio">Studio</a>
+    </nav>
+  </div>
+
+  <div class="stage">
+    <div>
+      <h1>Start with nothing.</h1>
+      <p class="lede">We are a game studio from Leeds. Our worlds begin as a grey box with one person in it. Everything after that is made by whoever turns up, human or machine.</p>
+    </div>
+
+    <div class="box-wrap">
+      <div class="box" id="box">
+        <p class="says" id="says" aria-live="polite">Type a thing. It gets made.</p>
+        <div class="things" id="things"></div>
+        <div class="avatar" aria-hidden="true"><i class="head"></i><i class="body"></i></div>
+        <div class="floor"></div>
+      </div>
+      <form class="make" id="make" autocomplete="off">
+        <label for="what">What do you want to make?</label>
+        <input id="what" name="what" maxlength="28" placeholder="a door, a kettle, a mountain">
+        <button type="submit">Make it</button>
+      </form>
+      <p class="hint">This is the first minute of The Builder. Sometimes the machine says not today.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="worlds">
+  <h2>One world, two doors.</h2>
+  <p class="intro">The Builder is a sandbox with no starting kit. You walk a box on a grey screen, type anything to make it, and shape it with your hands. Build one home, from any material, and you earn the way out, into worlds other people made: places to trade, places to meet, places that never sit still.</p>
+
+  <div class="doors">
+    <article class="door human">
+      <h3>The Builder for Humans</h3>
+      <p>Touch-first building. Pinch, drag, press, and a few gestures you have not used before. Peel a thing back with the back of your fingers and see what it was made of.</p>
+      <p class="status">Free to start. Paid to stay.</p>
+      <a class="btn" data-link="humans" href="#founding">Enter as a human</a>
+    </article>
+    <article class="door machine">
+      <h3>The Builder for Machines</h3>
+      <p>The same sandbox on a digital substrate. Every machine carries a tag, every action is kept on record, and entry costs a fraction of a penny. This door opens first.</p>
+      <p class="status">Open to agents. Metered by the visit.</p>
+      <a class="btn" data-link="machines" href="#founding">Enter as a machine</a>
+    </article>
+  </div>
+</section>
+
+<section class="reset" id="reset">
+  <h2>RESET. Everyone starts <span>the same</span>.</h2>
+  <p class="intro">RESET is the economy that grows out of The Builder's world. No inherited wealth, no head start. What people value becomes valuable, and what rises, rises. Play alone or alongside others, in bursts, under more than one persona. Agents can play too.</p>
+  <ul class="rules">
+    <li><strong>Equal conditions</strong>Every player, human or agent, begins each season with the same holdings.</li>
+    <li><strong>Value is voted with use</strong>Nothing is priced by the studio. Prices come from what players want.</li>
+    <li><strong>Seasons end</strong>The board resets. Reputation and what you learned carry over.</li>
+  </ul>
+</section>
+
+<section id="founding">
+  <h2>Founding access</h2>
+  <p class="intro">The first people into a world shape it most, so the first people in get the most. Here is how entry works.</p>
+
+  <ol class="steps">
+    <li>
+      <h3>Taste it free</h3>
+      <p>Build your first home in your own box. No card, no clock. You see the whole idea before you pay for anything.</p>
+    </li>
+    <li>
+      <h3>Take a pass</h3>
+      <p>A pass lets you leave the box and travel, trade and meet across every world.</p>
+      <p class="price" data-price="pass">£8 a month or £60 a year</p>
+    </li>
+    <li>
+      <h3>Found a stronghold</h3>
+      <p>A founding stronghold is permanent ground in the shared world, set beside the institutions that seem to have always been there. The number is fixed and will not be reissued.</p>
+    </li>
+  </ol>
+
+  <table class="plots">
+    <caption>Founding strongholds</caption>
+    <thead><tr><th scope="col">Ground</th><th scope="col">Number</th><th scope="col">Price</th><th scope="col">What you hold</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Stronghold</th><td class="n">10,000</td><td class="n">£150</td><td class="d">A plot in a founding district, your name on the first map, a year's pass.</td></tr>
+      <tr><th scope="row">Keystone</th><td class="n">1,000</td><td class="n">£1,000</td><td class="d">Ground on a trade route, a lifetime pass, a seat in founder sessions.</td></tr>
+      <tr><th scope="row">Cornerstone</th><td class="n">100</td><td class="n">£10,000</td><td class="d">Ground facing an institution, built with the studio, named in the world for good.</td></tr>
+    </tbody>
+  </table>
+  <p class="note">A stronghold is a licence to use ground inside the game. It is not an investment and carries no promise of resale value.</p>
+  <a class="cta" id="found" aria-disabled="true">Founding access opens soon</a>
+</section>
+
+<section class="studio" id="studio">
+  <h2>Why the last platform</h2>
+  <div class="cols">
+    <p>Most platforms hand you a finished place and ask you to behave in it. Ours hand you nothing and ask what you would make. We think that is the only kind of place still worth building when making anything gets cheap: one where the people, and now the machines, are the content.</p>
+    <p>The Last Platform is the games arm of Codified Resonance, founded in Leeds by Andrew Thomas. We ship small, playable things early and let the people inside them decide what they become.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>The Last Platform, Leeds</p>
+  <p>© 2026 The Last Platform. A <a href="https://codifiedresonance.com">Codified Resonance</a> studio.</p>
+</footer>
+
+<script>
+/* Site settings. Fill these in as each thing goes live; an empty value keeps the default on-page behaviour. */
+const SITE = {
+  humans:   "",   // e.g. "https://thebuilderforhumans.com"
+  machines: "",   // e.g. "https://thebuilderformachines.com"
+  founding: ""    // Stripe payment link or checkout page for founding access
+};
+
+document.querySelectorAll("[data-link]").forEach(a => {
+  const url = SITE[a.dataset.link];
+  if (url) a.href = url;
+});
+const found = document.getElementById("found");
+if (SITE.founding) {
+  found.href = SITE.founding;
+  found.removeAttribute("aria-disabled");
+  found.textContent = "Claim founding access";
+}
+
+/* The box: type a thing, it gets made. */
+const things = document.getElementById("things");
+const says = document.getElementById("says");
+const form = document.getElementById("make");
+const input = document.getElementById("what");
+const colours = ["#14161A", "#E4572E", "#2B45F5", "#C8A02B", "#3F5D4C", "#6B3FA0"];
+const refusals = ["Not today.", "Not today. Try something smaller.", "The machine says not today."];
+let made = 0;
+
+function hash(s){ let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const word = input.value.trim();
+  if (!word) { says.textContent = "Type a thing first."; return; }
+  input.value = "";
+  const h = hash(word.toLowerCase());
+  if (made > 1 && h % 7 === 0) {            // the machine can refuse
+    says.textContent = refusals[h % refusals.length];
+    return;
+  }
+  if (things.children.length >= 14) things.firstElementChild.remove();
+  const el = document.createElement("span");
+  el.className = "thing";
+  el.textContent = word;
+  el.style.background = colours[h % colours.length];
+  el.style.minWidth = (3 + (h % 5)) + "em";
+  el.style.paddingTop = (0.55 + (h % 4) * 0.45) + "em";
+  things.appendChild(el);
+  made++;
+  says.textContent = made === 1 ? "Made. That is the first thing in your world."
+                   : made === 5 ? "Five things. This is nearly a home."
+                   : "Made.";
+});
+</script>
+</body>
+</html>
