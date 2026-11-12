@@ -138,6 +138,18 @@ function start() {
   }
 
   /* a world's name, held in the liquid */
+  function etchMaterial(text) {
+    const c = document.createElement("canvas"); c.width = 512; c.height = 128;
+    const x = c.getContext("2d");
+    x.font = "500 76px 'IBM Plex Mono', ui-monospace, Menlo, monospace";
+    x.textAlign = "center"; x.textBaseline = "middle";
+    try { x.letterSpacing = "14px"; } catch (e) {}
+    x.fillStyle = "rgba(0,0,0,.9)"; x.fillText(text, 258, 68);
+    x.fillStyle = "rgba(205,209,216,.95)"; x.fillText(text, 256, 64);
+    const t = new THREE.CanvasTexture(c); t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace;
+    return new THREE.MeshBasicMaterial({ map: t, transparent: true, opacity: .8, depthWrite: false, toneMapped: false,
+      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+  }
   function nameTexture(text, blurred) {
     const c = document.createElement("canvas"); c.width = 256; c.height = 1024;
     const x = c.getContext("2d");
@@ -211,6 +223,11 @@ function start() {
     const r1 = new THREE.Mesh(rodGeo, steel); r1.position.set(-0.47, 0, -0.5);
     const r2 = new THREE.Mesh(rodGeo, steel); r2.position.set(0.47, 0, -0.5);
     hard.add(top, base, lipT, lipB, foot, r1, r2);
+    /* the number, etched into the face of the top cap */
+    const etch = new THREE.Mesh(
+      new THREE.CylinderGeometry(TR * 1.26 + 0.004, TR * 1.26 + 0.004, CAPH * 0.5, 40, 1, true, 0.12, 0.8),
+      etchMaterial(String(i + 1).padStart(2, "0")));
+    etch.position.y = top.position.y; etch.renderOrder = 3; hard.add(etch);
     const hose = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, HALF + CAPH - 0.16, -0.2), new THREE.Vector3(0, HALF + CAPH + 0.5, -0.5),
       new THREE.Vector3(0, HALF + CAPH + 0.75, -1.2), new THREE.Vector3(0, HALF + CAPH + 0.7, -RING + 0.3)]), 28, 0.07, 10), dark);

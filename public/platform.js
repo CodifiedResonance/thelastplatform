@@ -309,22 +309,22 @@
     field.appendChild(label); field.appendChild(input);
     var trap = el("input", "trap"); trap.type = "text"; trap.name = "_gotcha"; trap.tabIndex = -1;
     trap.setAttribute("aria-hidden", "true"); trap.autocomplete = "off";
-    var button = el("button", null, "Drop"); button.type = "submit";
+    var button = el("button", null, "INSERT"); button.type = "submit";
     form.appendChild(field); form.appendChild(trap); form.appendChild(button);
     var said = el("p", "said"); said.setAttribute("role", "status");
     box.appendChild(form); box.appendChild(said);
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
-      button.disabled = true; said.textContent = "Dropping.";
+      button.disabled = true; said.textContent = "Inserting.";
       fetch(platform.signup, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) })
         .then(function (r) {
           if (!r.ok) throw new Error(String(r.status));
           form.hidden = true;
-          said.textContent = "Held. Word will reach you there when a chamber fills.";
+          said.textContent = "Held. If a chamber fills, word may reach you there.";
         })
         .catch(function () {
           button.disabled = false;
-          said.textContent = "That did not land. Check the address and drop it again.";
+          said.textContent = "That did not land. Check the address and insert it again.";
         });
     });
   }
