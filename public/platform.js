@@ -1,5 +1,6 @@
 /* THE LAST PLATFORM: builds the drum of chambers from the manifest (emergences.js),
-   keeps what is inside them alive, lets a world engulf the screen, and takes word.
+   runs the drum (turning, waking, entering), and holds the locations people drop.
+   chambers3d.js draws the chambers in three dimensions; without WebGL the flat ones here are used.
 
    thelastplatform.com/?specimen places two test worlds in the chambers, to see how
    a world sits, wakes and engulfs. They are never shown without that flag. */
@@ -65,11 +66,13 @@
       bubbles.push({ x: Math.random(), y: Math.random(), r: 0.6 + Math.random() * 2.6,
         v: 0.03 + Math.random() * 0.09, ph: Math.random() * 6.28 });
     }
-    chambers.push({ el: c, cv: cv, ctx: cv.getContext("2d"), world: w, e: 0.2,
+    chambers.push({ el: c, cv: cv, ctx: cv.getContext("2d"), world: w, e: 0.2, feel: feel,
       a: rgb(feel.liquid[0]), b: rgb(feel.liquid[1]), g: rgb(feel.glow || feel.liquid[0]), bubbles: bubbles });
   }
 
-  var R = 0;
+  var R = 0, gl = null;
+  function unit() { return gl ? ring.clientHeight * 0.44 : drum.offsetWidth * 1.95; }
+  function halfTube() { return gl ? ring.clientHeight * 0.15 : drum.offsetWidth * 0.62; }
   function measure() {
     var cw = drum.offsetWidth;
     R = Math.round((cw * 1.95) / (2 * Math.tan(Math.PI / N)));
@@ -162,7 +165,7 @@
     if (!dragging) return;
     var dx = ev.clientX - sx;
     moved = Math.max(moved, Math.abs(dx));
-    rot = sr - dx / (drum.offsetWidth * 1.95);
+    rot = sr - dx / unit();
     target = rot;
   });
   function release(ev) {
@@ -176,39 +179,52 @@
 
   function tap(ev) {
     var mid = ring.getBoundingClientRect(); var cx = mid.left + mid.width / 2;
-    var off = (ev.clientX - cx) / (drum.offsetWidth * 1.2);
+    var off = (ev.clientX - cx) / (halfTube() * 2);
     if (Math.abs(off) > 0.5) { turn(off > 0 ? 1 : -1); return; }
     if (chambers[front()].world) enter(front());
   }
   ring.addEventListener("pointermove", function (ev) {
     if (ev.pointerType !== "mouse") return;
     var mid = ring.getBoundingClientRect(); var cx = mid.left + mid.width / 2;
-    hovering = Math.abs(ev.clientX - cx) < drum.offsetWidth * 0.62;
+    hovering = Math.abs(ev.clientX - cx) < halfTube();
   });
   ring.addEventListener("pointerleave", function () { hovering = false; });
 
   /* ---------- the loop ---------- */
-  var last = 0;
+  var last = 0, energy = [], awakeNow = [], near = [];
   function frame(now) {
-    var t = now / 1000, dt = Math.min(0.05, t - last) * 10; last = t;
-    if (!dragging) rot += (target - rot) * (reduce ? 1 : 0.11);
-    drum.style.transform = "translateZ(" + -R + "px) rotateY(" + -rot * STEP + "deg)";
+    var t = now / 1000, dt = Math.min(0.05, t - last); last = t;
+    if (!dragging) rot += (target - rot) * (reduce ? 1 : 1 - Math.exp(-dt * 7));
     var settled = Math.abs(target - rot) < 0.08 && !dragging;
     var f = front();
+    var onscreen = !document.hidden && ring.getBoundingClientRect().bottom > 0;
+    if (!gl) drum.style.transform = "translateZ(" + -R + "px) rotateY(" + -rot * STEP + "deg)";
     for (var i = 0; i < N; i++) {
       var ch = chambers[i];
       var d = Math.abs(mod(i - rot + N / 2) - N / 2);
       var vis = d < 1.75;
-      ch.el.style.opacity = vis ? Math.max(0, 1 - d * 0.5).toFixed(3) : 0;
-      ch.el.style.visibility = vis ? "visible" : "hidden";
       var awake = !!ch.world && i === f && settled && (hovering || !hoverable || entered);
       if (awake !== ch.awake) { ch.awake = awake; ch.el.classList.toggle("awake", awake); }
       var want = ch.world ? (awake ? 1 : 0.42) : 0.14;
-      ch.e += (want - ch.e) * 0.06;
-      if (vis && !entered) draw(ch, t, reduce ? 0 : dt);
+      ch.e += (want - ch.e) * (1 - Math.exp(-dt * 2.6));
+      energy[i] = ch.e; awakeNow[i] = awake; near[i] = vis;
+      if (gl) continue;
+      ch.el.style.opacity = vis ? Math.max(0, 1 - d * 0.5).toFixed(3) : 0;
+      ch.el.style.visibility = vis ? "visible" : "hidden";
+      if (vis && !entered) draw(ch, t, reduce ? 0 : dt * 10);
+    }
+    if (gl && onscreen && !(entered && worldEl.classList.contains("settled"))) {
+      gl.render({ dt: reduce ? 0 : dt, rot: rot, energy: energy, awake: awakeNow, near: near });
     }
     requestAnimationFrame(frame);
   }
+
+  /* the three-dimensional chambers (chambers3d.js) attach here when WebGL is there */
+  window.LP = {
+    ring: ring, count: N, chambers: chambers,
+    bleed: function () { return parseFloat(getComputedStyle(ring).marginLeft) * -1 || 0; },
+    attach: function (r) { gl = r; ring.classList.add("gl"); r.size(); }
+  };
 
   /* ---------- entering a world: it takes the whole screen ---------- */
   var worldEl = document.getElementById("world");
@@ -240,13 +256,14 @@
     entered = true;
     void worldEl.offsetWidth;
     worldEl.classList.add("open");
+    setTimeout(function () { if (entered) worldEl.classList.add("settled"); }, 1000);
     document.body.style.overflow = "hidden";
     document.getElementById("world-back").focus({ preventScroll: true });
     try { history.replaceState(null, "", "#" + w.id); } catch (e) {}
   }
   function leave() {
     if (!entered) return;
-    worldEl.classList.remove("open");
+    worldEl.classList.remove("open"); worldEl.classList.remove("settled");
     entered = false;
     document.body.style.overflow = "";
     setTimeout(function () { if (!entered) worldEl.hidden = true; }, reduce ? 0 : 950);
@@ -267,9 +284,11 @@
   if (seen || reduce || /[?&]noboot\b/.test(location.search)) {
     boot.style.transition = "none"; ready();
   } else {
-    var lines = boot.querySelectorAll("p"), timers = [];
-    [300, 1500, 2900].forEach(function (ms, n) { timers.push(setTimeout(function () { lines[n].classList.add("on"); }, ms)); });
-    timers.push(setTimeout(ready, 4600));
+    /* the words stay solid. only the ellipsis moves: 1 2 3, a blank beat, 1 2 3, and in. */
+    var dots = boot.querySelector(".dots"), timers = [];
+    var beats = [[350, "."], [800, ".."], [1250, "..."], [1700, ""], [1930, "."], [2380, ".."], [2830, "..."]];
+    beats.forEach(function (bt) { timers.push(setTimeout(function () { dots.textContent = bt[1]; }, bt[0])); });
+    timers.push(setTimeout(ready, 3300));
     boot.addEventListener("click", function () { timers.forEach(clearTimeout); ready(); });
   }
 
@@ -284,28 +303,28 @@
     var form = el("form", "signup");
     form.action = platform.signup; form.method = "POST";
     var field = el("div", "field");
-    var label = el("label", null, "Email address"); label.htmlFor = "word-email";
+    var label = el("label", null, "Where you can be reached"); label.htmlFor = "word-email";
     var input = el("input"); input.type = "email"; input.name = "email"; input.id = "word-email";
     input.required = true; input.autocomplete = "email";
     field.appendChild(label); field.appendChild(input);
     var trap = el("input", "trap"); trap.type = "text"; trap.name = "_gotcha"; trap.tabIndex = -1;
     trap.setAttribute("aria-hidden", "true"); trap.autocomplete = "off";
-    var button = el("button", null, "Send word"); button.type = "submit";
+    var button = el("button", null, "Drop"); button.type = "submit";
     form.appendChild(field); form.appendChild(trap); form.appendChild(button);
     var said = el("p", "said"); said.setAttribute("role", "status");
     box.appendChild(form); box.appendChild(said);
     form.addEventListener("submit", function (ev) {
       ev.preventDefault();
-      button.disabled = true; said.textContent = "Sending.";
+      button.disabled = true; said.textContent = "Dropping.";
       fetch(platform.signup, { method: "POST", headers: { Accept: "application/json" }, body: new FormData(form) })
         .then(function (r) {
           if (!r.ok) throw new Error(String(r.status));
           form.hidden = true;
-          said.textContent = "Word sent. You will hear when a chamber fills.";
+          said.textContent = "Held. Word will reach you there when a chamber fills.";
         })
         .catch(function () {
           button.disabled = false;
-          said.textContent = "That did not go through. Check the address and send it again.";
+          said.textContent = "That did not land. Check the address and drop it again.";
         });
     });
   }

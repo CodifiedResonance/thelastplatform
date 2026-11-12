@@ -35,7 +35,6 @@
         <span aria-hidden="true">The Last</span>
         <span aria-hidden="true"><b>P</b>latform</span>
       </h1>
-      <a class="toword" href="#word">Send word</a>
     </header>
 
     <div class="ring" id="ring">
@@ -50,17 +49,18 @@
     </div>
   </section>
 
-  <section class="word" id="word">
-    <h2>A new gravity centre.</h2>
-    <p>There are no worlds here yet. The chambers are built and the conditions are set. When a world is ready it is placed in a chamber, and from there it can be entered.</p>
-    <p>Leave an address and you will hear when a chamber fills. One message each time, and nothing else.</p>
-    <div id="signup"><p class="quiet">The list is not open yet.</p></div>
+  <section class="word" id="drop">
+    <div class="word-in">
+      <h2>A new gravity centre.</h2>
+      <p>There are no worlds here yet. The chambers are built and the conditions are set. When a world is ready it is placed in a chamber, and from there it can be entered.</p>
+      <p>Drop a location where you can be reached. When a chamber fills, word arrives there. Nothing else does.</p>
+      <div id="signup"><p class="quiet">Not open yet.</p></div>
+    </div>
   </section>
 </main>
 
 <footer>
   <p>The Last Platform is the fifth world of <a href="https://codifiedresonance.com">Codified Resonance</a>.</p>
-  <p>Leeds, 2026</p>
 </footer>
 
 <div class="world" id="world" role="dialog" aria-modal="true" aria-labelledby="world-name" hidden>
@@ -74,7 +74,9 @@
   </div>
 </div>
 
+<script type="importmap">{"imports":{"three":"/vendor/three.module.js","three/addons/":"/vendor/addons/"}}</script>
 <script src="/emergences.js"></script>
 <script src="/platform.js"></script>
+<script type="module" src="/chambers3d.js"></script>
 </body>
 </html>
