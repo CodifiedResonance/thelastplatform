@@ -284,11 +284,18 @@
   if (seen || reduce || /[?&]noboot\b/.test(location.search)) {
     boot.style.transition = "none"; ready();
   } else {
-    /* the words stay solid. only the ellipsis moves: 1 2 3, a blank beat, 1 2 3, and in. */
+    /* the full arrival: Loading (its ellipsis moving), then who this is, then Welcome back, then in */
     var dots = boot.querySelector(".dots"), timers = [];
-    var beats = [[350, "."], [800, ".."], [1250, "..."], [1700, ""], [1930, "."], [2380, ".."], [2830, "..."]];
-    beats.forEach(function (bt) { timers.push(setTimeout(function () { dots.textContent = bt[1]; }, bt[0])); });
-    timers.push(setTimeout(ready, 3300));
+    var b1 = boot.querySelector(".b1"), b2 = boot.querySelector(".b2"), b3 = boot.querySelector(".b3");
+    function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+    at(150, function () { b1.classList.add("on"); });
+    [[400, "."], [750, ".."], [1100, "..."], [1450, ""], [1650, "."], [1950, ".."], [2250, "..."]].forEach(function (bt) {
+      at(bt[0], function () { dots.textContent = bt[1]; });
+    });
+    at(2600, function () { b1.classList.remove("on"); });
+    at(2700, function () { b2.classList.add("on"); });
+    at(7300, function () { b3.classList.add("on"); });
+    at(9800, ready);
     boot.addEventListener("click", function () { timers.forEach(clearTimeout); ready(); });
   }
 

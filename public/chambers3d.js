@@ -144,10 +144,11 @@ function start() {
     x.font = "500 76px 'IBM Plex Mono', ui-monospace, Menlo, monospace";
     x.textAlign = "center"; x.textBaseline = "middle";
     try { x.letterSpacing = "14px"; } catch (e) {}
-    x.fillStyle = "rgba(0,0,0,.9)"; x.fillText(text, 258, 68);
-    x.fillStyle = "rgba(205,209,216,.95)"; x.fillText(text, 256, 64);
-    const t = new THREE.CanvasTexture(c); t.anisotropy = 8; t.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({ map: t, transparent: true, opacity: .8, depthWrite: false, toneMapped: false,
+    x.fillStyle = "#fff"; x.fillText(text, 256, 66);
+    const t = new THREE.CanvasTexture(c); t.anisotropy = 8;
+    /* the same metal, cut matte: it only shows where the light catches it */
+    return new THREE.MeshPhysicalMaterial({ color: 0x24262a, metalness: 1, roughness: 0.82, alphaMap: t, transparent: true,
+      opacity: 0.6, depthWrite: false, bumpMap: t, bumpScale: -1.2,
       polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
   }
   function nameTexture(text, blurred) {
