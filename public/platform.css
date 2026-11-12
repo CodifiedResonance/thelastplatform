@@ -125,3 +125,10 @@ footer a{color:var(--steel)}
   .world{transition:none}
   .emerging{transition:none}
 }
+
+/* on a phone the console is all chamber: the wordmark goes dark, only the P stays lit.
+   the rest of the letters are still there, cut faintly into the black, for whoever looks */
+@media (max-width:640px){
+  .wordmark{font-size:19px;-webkit-text-stroke:1px rgba(200,204,210,.1)}
+  .wordmark b{text-shadow:0 0 10px rgba(255,255,255,.75),0 0 30px rgba(220,224,230,.4)}
+}
