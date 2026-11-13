@@ -54,7 +54,5 @@ window.EMERGENCES = [
     terms: "Its own ground, its own terms. They are set out at its door.",
     doors: [{ label: "Enter as a machine", href: "/the-builder-for-machines/" }],
     feel: { liquid: ["#9FC4D6", "#081820"], glow: "#8FD3F0", ink: "#DCEFF7", ground: "#07141B" }
-  },
-  { id: "animal-war", name: "Animal War", state: "forming",
-    feel: { liquid: ["#C4562F", "#2A0E08"], glow: "#E2703F" } }
+  }
 ];
