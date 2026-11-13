@@ -55,6 +55,8 @@ function start() {
   const glassGeo = new THREE.CapsuleGeometry(TR, TL, 24, 72);
   const liquidGeo = new THREE.CapsuleGeometry(TR * 0.9, TL, 20, 56);
   const bubbleGeo = new THREE.SphereGeometry(1, 14, 10);
+  const CORE = -0.3;
+  const coreGeo = new THREE.PlaneGeometry(0.86, 1.72);
   const capGeo = new THREE.CylinderGeometry(TR * 1.26, TR * 1.26, CAPH, 72);
   const lipGeo = new THREE.CylinderGeometry(TR * 1.31, TR * 1.31, 0.045, 72);
   const footGeo = new THREE.CylinderGeometry(TR * 1.5, TR * 1.58, FOOT, 72);
@@ -83,14 +85,14 @@ function start() {
     roughnessMap: smudge(), transmission: 1, thickness: 0.42, ior: 1.46, dispersion: 0.6,
     clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 2.2, specularIntensity: 1 });
 
-  function liquidMaterial(feel, ph) {
+  function liquidMaterial(feel, ph, forming) {
     return new THREE.ShaderMaterial({
       side: THREE.BackSide,
       uniforms: { uA: { value: new THREE.Color(feel.liquid[0]) }, uB: { value: new THREE.Color(feel.liquid[1]) },
-        uG: { value: new THREE.Color(feel.glow || feel.liquid[0]) }, uE: { value: 0.14 }, uT: { value: 0 }, uPh: { value: ph } },
+        uG: { value: new THREE.Color(feel.glow || feel.liquid[0]) }, uE: { value: 0.14 }, uT: { value: 0 }, uPh: { value: ph }, uF: { value: forming ? 1 : 0 } },
       vertexShader: `varying vec3 vP;varying vec3 vN;varying vec3 vV;
         void main(){vP=position;vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vV=mv.xyz;gl_Position=projectionMatrix*mv;}`,
-      fragmentShader: `uniform vec3 uA,uB,uG;uniform float uE,uT,uPh;varying vec3 vP;varying vec3 vN;varying vec3 vV;
+      fragmentShader: `uniform vec3 uA,uB,uG;uniform float uE,uT,uPh,uF;varying vec3 vP;varying vec3 vN;varying vec3 vV;
         ${NOISE}${FOGF}
         void main(){
           float lv=${LEVEL.toFixed(3)}+sin(vP.x*7.+uT*1.3)*.012+sin(vP.z*5.-uT*1.7)*.01;
@@ -104,6 +106,9 @@ function start() {
           col+=uG*uE*pow(thick,4.)*(.16+.14*breath)*(.3+1.4*wisps);
           float shaft=pow(noise(vec3(vP.x*9.+uT*.3,uT*.25,vP.z*9.)),3.)*smoothstep(lv-1.5,lv,vP.y);
           col+=uA*uE*shaft*.7;
+          float band=exp(-pow((vP.y-(${CORE.toFixed(3)}))/.6,2.));
+          float churn=fbm(vec3(vP.x*4.+sin(uT*.3)*.6,vP.y*3.+uT*.3,vP.z*4.)+uPh*2.);
+          col+=uG*uF*band*pow(thick,2.)*(.05+.07*(.5+.5*sin(uT*1.15+uPh)))*(.3+1.7*churn);
           col*=smoothstep(lv,lv-.05,vP.y)*.35+.65;
           gl_FragColor=vec4(col*fogk(-vV.z),1.);
         }`
@@ -133,6 +138,27 @@ function start() {
         void main(){float r=length(vU-.5)*2.;float edge=smoothstep(.72,1.,r);
           float rip=.5+.5*sin(r*26.-uT*2.2);
           vec3 col=mix(vec3(.5),uA,.6)*(edge*.9+rip*.07)*(.1+uE*.7);
+          gl_FragColor=vec4(col*fogk(-vV.z),1.);}`
+    });
+  }
+
+  /* something forming: a mass gathering at the core of the liquid, not yet a world */
+  function coreMaterial(feel, ph) {
+    return new THREE.ShaderMaterial({
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+      uniforms: { uG: { value: new THREE.Color(feel.glow || feel.liquid[0]) }, uE: { value: 0.3 }, uT: { value: 0 }, uPh: { value: ph } },
+      vertexShader: `varying vec2 vU;varying vec3 vV;void main(){vU=uv;vec4 mv=modelViewMatrix*vec4(position,1.);vV=mv.xyz;gl_Position=projectionMatrix*mv;}`,
+      fragmentShader: `uniform vec3 uG;uniform float uE,uT,uPh;varying vec2 vU;varying vec3 vV;${NOISE}${FOGF}
+        void main(){vec2 p=(vU-.5)*vec2(1.,2.);
+          float r=length(p*vec2(1.,.6));float ang=atan(p.y,p.x);
+          float beat=.5+.5*sin(uT*1.15+uPh);
+          float n=fbm(vec3(p*3.4+vec2(cos(uT*.21),sin(uT*.17))*.7,uT*.3+uPh));
+          float n2=fbm(vec3(p*7.-vec2(0.,uT*.12),uT*.45-uPh));
+          float body=smoothstep(.36+.07*beat,.02,r+(n-.5)*.34);
+          float heart=exp(-r*r*40.)*(.04+.06*beat);
+          float tend=pow(fbm(vec3(ang*1.6+uPh,r*6.+uT*.55,uT*.1)),2.2)*smoothstep(.48,.12,r)*smoothstep(.0,.1,r);
+          vec3 col=uG*(body*(.12+.4*n2*n2)+tend*.4)+mix(uG,vec3(1.),.4)*heart;
+          col*=(.2+uE*1.5)*smoothstep(.5,.4,r);
           gl_FragColor=vec4(col*fogk(-vV.z),1.);}`
     });
   }
@@ -210,17 +236,22 @@ function start() {
     g.rotation.y = a;
     drum.add(g);
 
-    const liquid = new THREE.Mesh(liquidGeo, liquidMaterial(feel, i * 1.7)); liquid.renderOrder = 1;
+    const liquid = new THREE.Mesh(liquidGeo, liquidMaterial(feel, i * 1.7, !!src.forming)); liquid.renderOrder = 1;
     const surf = new THREE.Mesh(surfGeo, surfaceMaterial(feel)); surf.rotation.x = -Math.PI / 2; surf.position.y = LEVEL; surf.renderOrder = 2;
     const COUNT = 54;
     const bub = new THREE.InstancedMesh(bubbleGeo, bubbleMaterial(feel), COUNT); bub.renderOrder = 3; bub.frustumCulled = false;
     const list = [];
-    for (let k = 0; k < COUNT; k++) list.push(seed({}, true));
+    for (let k = 0; k < COUNT; k++) list.push(seed({}, true, !!src.forming));
     g.add(liquid, surf, bub);
 
     let name = null;
-    if (src.world) {
-      name = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 2.48), nameMaterial(src.world));
+    let core = null;
+    if (src.forming) {
+      core = coreMaterial(feel, i * 2.3);
+      for (let q = 0; q < 2; q++) { const c = new THREE.Mesh(coreGeo, core); c.position.y = CORE; c.rotation.y = q * Math.PI / 2; c.renderOrder = 2; g.add(c); }
+    }
+    if (src.world || src.forming) {
+      name = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 2.48), nameMaterial(src.world || src.forming));
       name.position.set(0, -0.2, 0.02); name.renderOrder = 2; g.add(name);
     }
     g.add(new THREE.Mesh(glassGeo, glass));
@@ -257,12 +288,13 @@ function start() {
     mirror.add(new THREE.Mesh(liquidGeo, liquid.material), top.clone(), base.clone(), lipT.clone(), lipB.clone());
     mirror.scale.y = -1; mirror.position.y = FLOOR * 2; g.add(mirror);
 
-    return { src, g, liquid, surf, bub, list, name, ledMat, pool, glowCol, gold: new THREE.Color(0xc9a24b), off: new THREE.Color(src.world ? 0x4a3c1c : 0x1c170c) };
+    return { src, g, liquid, surf, bub, list, name, core, ledMat, pool, glowCol, gold: new THREE.Color(0xc9a24b), off: new THREE.Color(src.world || src.forming ? 0x4a3c1c : 0x1c170c) };
   });
-  function seed(b, anywhere) {
-    const a = Math.random() * 6.283, r = Math.sqrt(Math.random()) * TR * 0.74;
+  function seed(b, anywhere, forming) {
+    const born = forming && !anywhere;    /* what is forming gives off its own bubbles */
+    const a = Math.random() * 6.283, r = Math.sqrt(Math.random()) * TR * (born ? 0.3 : 0.74);
     b.x = Math.cos(a) * r; b.z = Math.sin(a) * r;
-    b.y = anywhere ? -HALF + 0.2 + Math.random() * (LEVEL + HALF - 0.2) : -HALF + 0.15;
+    b.y = anywhere ? -HALF + 0.2 + Math.random() * (LEVEL + HALF - 0.2) : born ? CORE - 0.2 + Math.random() * 0.5 : -HALF + 0.15;
     b.r = 0.008 + Math.pow(Math.random(), 2.4) * 0.05;
     b.v = 0.1 + b.r * 9 + Math.random() * 0.1; b.ph = Math.random() * 6.283;
     return b;
@@ -312,15 +344,18 @@ function start() {
       u.surf.material.uniforms.uE.value = e; u.surf.material.uniforms.uT.value = simT;
       u.bub.material.uniforms.uE.value = e;
       if (u.name) { u.name.material.uniforms.uE.value = e; const s = 0.94 + 0.06 * e; u.name.scale.set(s, s, 1); }
-      u.pool.material.color.copy(u.glowCol).multiplyScalar(Math.max(0, e - 0.1) * (u.src.world ? 0.55 : 0.12));
-      u.ledMat.color.copy(u.off).lerp(u.gold, state.awake[i] ? 1 : 0).multiplyScalar(state.awake[i] ? 3.2 : 1);
+      const beat = 0.5 + 0.5 * Math.sin(simT * 1.15 + i * 2.3);
+      u.pool.material.color.copy(u.glowCol).multiplyScalar(Math.max(0, e - 0.1) * (u.src.world ? 0.55 : u.src.forming ? 0.25 + 0.3 * beat : 0.12));
+      if (u.core) { u.core.uniforms.uE.value = e; u.core.uniforms.uT.value = simT; }
+      if (u.src.forming) u.ledMat.color.copy(u.off).lerp(u.gold, 0.15 + 0.6 * beat).multiplyScalar(1 + 1.2 * beat);
+      else u.ledMat.color.copy(u.off).lerp(u.gold, state.awake[i] ? 1 : 0).multiplyScalar(state.awake[i] ? 3.2 : 1);
       if (!near) continue;
       const live = Math.round(8 + e * 46);
       u.bub.count = Math.min(live, u.list.length);
       for (let k = 0; k < u.bub.count; k++) {
         const b = u.list[k];
         b.y += b.v * state.dt * (0.3 + e * 1.5);
-        if (b.y > LEVEL - b.r) seed(b, false);
+        if (b.y > LEVEL - b.r) seed(b, false, !!u.src.forming);
         const grow = 1 + (b.y + HALF) * 0.12;
         tmp.position.set(b.x + Math.sin(simT * 2.3 + b.ph) * 0.02, b.y, b.z + Math.cos(simT * 1.9 + b.ph) * 0.02);
         const wob = 1 + Math.sin(simT * 7 + b.ph) * 0.08;

@@ -22,7 +22,9 @@
         line: "A second test world with a different feeling, to show that each one brings its own.",
         terms: "Its own terms would be written here.",
         doors: [{ label: "Its door", href: "" }],
-        feel: { liquid: ["#7FE3D0", "#06302F"], glow: "#4FD8C4", ink: "#E6FFFA", ground: "#052422" } }
+        feel: { liquid: ["#7FE3D0", "#06302F"], glow: "#4FD8C4", ink: "#E6FFFA", ground: "#052422" } },
+      { id: "specimen-three", name: "Specimen Three", state: "forming",
+        feel: { liquid: ["#C9A0F2", "#1E0B33"], glow: "#B98CF0" } }
     ];
   }
 
@@ -44,29 +46,39 @@
   }
   function rgba(c, a) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")"; }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function hex(c) { return "#" + c.map(function (v) { v = Math.round(v).toString(16); return v.length < 2 ? "0" + v : v; }).join(""); }
+  function toward(a, b, k) { a = rgb(a); b = rgb(b); return hex([0, 1, 2].map(function (i) { return a[i] + (b[i] - a[i]) * k; })); }
+  /* something forming has not taken its own feeling yet: only a trace of it shows in the grey */
+  function unformed(f) {
+    if (!f || !f.liquid) return { liquid: ["#5A5D64", "#0B0B0C"], glow: "#C8CCD2" };
+    return { liquid: [toward(f.liquid[0], VACANT.liquid[0], 0.55), toward(f.liquid[1], VACANT.liquid[1], 0.7)],
+      glow: toward(f.glow || f.liquid[0], "#C8CCD2", 0.45) };
+  }
 
   /* ---------- build the chambers ---------- */
   var ring = document.getElementById("ring");
   var drum = document.getElementById("drum");
   var chambers = [];
   for (var i = 0; i < N; i++) {
-    var w = worlds[i] || null;
-    var c = el("div", "chamber" + (w ? " holds" : ""));
+    var entry = worlds[i] || null;
+    var forming = entry && entry.state === "forming" ? entry : null;
+    var w = forming ? null : entry;
+    var c = el("div", "chamber" + (w ? " holds" : "") + (forming ? " forming" : ""));
     var top = el("div", "cap top"); top.appendChild(el("i")); top.appendChild(el("u", null, pad(i + 1)));
     var base = el("div", "cap base"); base.appendChild(el("i"));
     var tube = el("div", "tube");
     var cv = el("canvas");
     tube.appendChild(cv);
-    if (w) tube.appendChild(el("span", "emerging", w.name));
+    if (entry) tube.appendChild(el("span", "emerging", entry.name));
     c.appendChild(tube); c.appendChild(top); c.appendChild(base);
     drum.appendChild(c);
-    var feel = (w && w.feel) || VACANT;
+    var feel = (w && w.feel) || (forming ? unformed(forming.feel) : VACANT);
     var bubbles = [];
     for (var b = 0; b < 26; b++) {
       bubbles.push({ x: Math.random(), y: Math.random(), r: 0.6 + Math.random() * 2.6,
         v: 0.03 + Math.random() * 0.09, ph: Math.random() * 6.28 });
     }
-    chambers.push({ el: c, cv: cv, ctx: cv.getContext("2d"), world: w, e: 0.2, feel: feel,
+    chambers.push({ el: c, cv: cv, ctx: cv.getContext("2d"), world: w, forming: forming, e: 0.2, feel: feel,
       a: rgb(feel.liquid[0]), b: rgb(feel.liquid[1]), g: rgb(feel.glow || feel.liquid[0]), bubbles: bubbles });
   }
 
@@ -101,6 +113,13 @@
     rg.addColorStop(0, rgba(ch.g, 0.08 + e * 0.5 + breath * 0.06));
     rg.addColorStop(1, rgba(ch.g, 0));
     x.fillStyle = rg; x.fillRect(0, 0, w, h);
+    if (ch.forming) {                      /* something gathering at the core */
+      var beat = 0.5 + 0.5 * Math.sin(t * 1.15 + ch.bubbles[1].ph);
+      var ny = h * 0.56, nr = h * (0.1 + 0.05 * beat);
+      var ng = x.createRadialGradient(w / 2, ny, 0, w / 2, ny, nr * 2.2);
+      ng.addColorStop(0, rgba(ch.g, 0.34 + 0.3 * beat)); ng.addColorStop(0.4, rgba(ch.g, 0.1 + 0.1 * beat)); ng.addColorStop(1, rgba(ch.g, 0));
+      x.fillStyle = ng; x.fillRect(0, 0, w, h);
+    }
     /* the surface of the liquid */
     var sy = h * 0.07 + Math.sin(t * 1.3) * 1.5;
     x.fillStyle = "rgba(0,0,0,.72)";
@@ -130,10 +149,14 @@
     var idx = front();
     if (idx === shown) return;
     shown = idx;
-    var w = chambers[idx].world;
+    var w = chambers[idx].world, fm = chambers[idx].forming;
     readout.textContent = "";
     readout.appendChild(el("p", "r-num", "Chamber " + pad(idx + 1) + (w && w.inscription ? " · " + w.inscription : "")));
-    if (w) {
+    if (fm) {
+      readout.appendChild(el("p", "r-name forming", fm.name));
+      readout.appendChild(el("p", "r-state", "Forming"));
+      readout.appendChild(el("p", "r-line", fm.line || "Not yet a world. It cannot be entered."));
+    } else if (w) {
       readout.appendChild(el("p", "r-name", w.name));
       var btn = el("button", "r-enter", "Enter");
       btn.type = "button";
@@ -142,7 +165,7 @@
       readout.appendChild(btn);
     } else {
       readout.appendChild(el("p", "r-name vacant", "Vacant"));
-      readout.appendChild(el("p", "r-line", worlds.length ? "Waiting for what emerges next." : "The conditions are set. Nothing has emerged yet."));
+      readout.appendChild(el("p", "r-line", worlds.filter(Boolean).length ? "Waiting for what emerges next." : "The conditions are set. Nothing has emerged yet."));
     }
   }
   function turn(by) { target = Math.round(target) + by; showReadout(); }
@@ -205,7 +228,8 @@
       var vis = d < 1.75;
       var awake = !!ch.world && i === f && settled && (hovering || !hoverable || entered);
       if (awake !== ch.awake) { ch.awake = awake; ch.el.classList.toggle("awake", awake); }
-      var want = ch.world ? (awake ? 1 : 0.42) : 0.14;
+      var stir = !!ch.forming && i === f && settled && (hovering || !hoverable);
+      var want = ch.world ? (awake ? 1 : 0.42) : ch.forming ? (stir ? 0.47 : 0.33) : 0.14;
       ch.e += (want - ch.e) * (1 - Math.exp(-dt * 2.6));
       energy[i] = ch.e; awakeNow[i] = awake; near[i] = vis;
       if (gl) continue;
@@ -277,7 +301,7 @@
   function ready() {
     boot.classList.add("done");
     var id = (location.hash || "").slice(1);
-    worlds.forEach(function (w, idx) { if (w.id === id) { target = rot = idx; shown = -1; showReadout(); enter(idx); } });
+    worlds.forEach(function (w, idx) { if (w && id && w.id === id) { target = rot = idx; shown = -1; showReadout(); enter(idx); } });
   }
   var seen = false;
   try { seen = sessionStorage.getItem("lp.on") === "1"; sessionStorage.setItem("lp.on", "1"); } catch (e) {}
