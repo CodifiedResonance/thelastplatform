@@ -70,22 +70,22 @@ window.EMERGENCES = [
   },
   {
     id: "the-builder",
-    no: 3,
+    state: "forming",             /* until it is locked in; then remove this and give it no: 3 */
     name: "The Builder",
     inscription: "for humans",
     line: "You start in a box with nothing. Type anything and it is made. Shape it with your hands. Build one home, from any material, and the way out of the box opens.",
-    terms: "Its own ground, its own terms. They are set out at its door.",
-    doors: [{ label: "Enter The Builder", href: "/the-builder/" }],
+    terms: "Its door is being hung. It opens here.",
+    doors: [],                     /* its door goes here once the game is in: { label: "Enter The Builder", href: "/the-builder/" } */
     feel: { liquid: ["#D9D6CF", "#3A3835"], glow: "#F1EEE6", ink: "#161514", ground: "#CFCCC5" }
   },
   {
     id: "the-builder-for-machines",
-    no: 4,
+    state: "forming",             /* until it is locked in; then remove this and give it no: 4 */
     name: "The Builder for Machines",
     inscription: "for machines",
     line: "The same box, on a digital substrate. A machine arrives with a tag, builds, and its record is kept.",
-    terms: "Its own ground, its own terms. They are set out at its door.",
-    doors: [{ label: "Enter as a machine", href: "/the-builder-for-machines/" }],
+    terms: "Its door is being hung. It opens here.",
+    doors: [],                     /* its door goes here once the game is in: { label: "Enter as a machine", href: "/the-builder-for-machines/" } */
     feel: { liquid: ["#9FC4D6", "#081820"], glow: "#8FD3F0", ink: "#DCEFF7", ground: "#07141B" }
   }
 ];

@@ -28,7 +28,7 @@ for f in os.listdir(wv_src):
 def localise(t):
     t = t.replace("https://cdn.jsdelivr.net/gh/CodifiedResonance/world-vault-assets@main/", "/world-vault/assets/")
     t = t.replace("https://codifiedresonance.com/world-vault", SITE + "/world-vault")
-    t = t.replace(SITE + "/world-vault/og.png", "https://codifiedresonance.com/world-vault/og.png")   # the image stays where it is
+    t = re.sub(r"https://cdn\.prod\.website-files\.com/[^\"]+", SITE + "/world-vault/og.png", t)
     # World Vault belongs to the platform now
     t = t.replace(" · Codified Resonance</title>", " · The Last Platform</title>").replace(" — Codified Resonance</title>", " · The Last Platform</title>")
     t = t.replace(" Part of Codified Resonance.", "")
@@ -65,6 +65,7 @@ th = open(os.path.join(HERE, "world-vault-webflow-threshold.html"), encoding="ut
 th = th.replace("<title>World Vault · Codified Resonance</title>", localise(threshold_head).strip())
 th = th.replace('<a href="/">Codified Resonance</a>', '<a href="/">The Last Platform</a>')
 th = re.sub(r'\s*<footer class="footer">.*?</footer>', '', th, flags=re.S)       # no footer line: the threshold ends on the veils
+shutil.copy(os.path.join(HERE, "world-vault-og.png"), os.path.join(wv, "og.png"))
 th = localise(th)
 th = th.replace('"https://codifiedresonance.com/#organization"', '"%s/#organization"' % SITE).replace('"https://codifiedresonance.com/"', '"%s/"' % SITE)
 th = th.replace('"name": "Codified Resonance"', '"name": "The Last Platform"').replace("The unified field of the new world.", "A new gravity centre.")
