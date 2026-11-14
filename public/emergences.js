@@ -38,6 +38,24 @@ window.PLATFORM = {
 
 window.EMERGENCES = [
   {
+    id: "world-vault",
+    name: "World Vault",
+    inscription: "three veils",
+    line: "A world, and what it becomes. Shape a planet from its star down to what may emerge on it, and sit with what it takes.",
+    terms: "The first veil, Terrain of Becoming, is open. The Life Filter and The Age of Intelligence lift for what feels right to pay, and stay lifted on that device.",
+    doors: [{ label: "Enter the threshold", href: "https://codifiedresonance.com/world-vault" }],
+    feel: { liquid: ["#4A8EC4", "#03070C"], glow: "#3A9BD9", ink: "#E0E8F2", ground: "#020305" }
+  },
+  {
+    id: "moonline",
+    name: "Moonline",
+    inscription: "five crossings, and the voyage",
+    line: "One intensement: a re-feel of the forces at play in the universe. Impact, light, heat, current, gravity. The science is the antagonist.",
+    terms: "The way in is the descent. Edition I is the proving ground; Edition II is the voyage, outward from home in order of real distance.",
+    doors: [{ label: "Begin the descent", href: "https://codifiedresonance.com/last-platform/moonline" }],
+    feel: { liquid: ["#97A3BC", "#04060C"], glow: "#DDE4F5", ink: "#F3F6FF", ground: "#020408" }
+  },
+  {
     id: "the-builder",
     name: "The Builder",
     inscription: "for humans",
