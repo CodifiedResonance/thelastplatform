@@ -29,7 +29,10 @@
   }
 
   var VACANT = { liquid: ["#34363B", "#0A0A0B"], glow: "#8A8E96" };
-  var N = Math.max(6, worlds.length + 1);          /* always at least one vacant chamber */
+  /* the drum holds what has just emerged or is forming; worlds that have settled stand on the shelves below */
+  var all = worlds;
+  worlds = all.filter(function (w) { return !w || !w.shelf; });
+  var N = Math.max(6, worlds.filter(Boolean).length + 1);    /* six chambers, always at least one vacant */
   var STEP = 360 / N;
 
   function el(tag, cls, text) {
@@ -59,27 +62,78 @@
   var ring = document.getElementById("ring");
   var drum = document.getElementById("drum");
   var chambers = [];
-  for (var i = 0; i < N; i++) {
-    var entry = worlds[i] || null;
+  function chamber(entry, parent) {
     var forming = entry && entry.state === "forming" ? entry : null;
     var w = forming ? null : entry;
-    var c = el("div", "chamber" + (w ? " holds" : "") + (forming ? " forming" : ""));
-    var top = el("div", "cap top"); top.appendChild(el("i")); top.appendChild(el("u", null, pad(i + 1)));
+    var c = el("div", "chamber" + (w ? " holds" : "") + (forming ? " forming" : "") + (entry && entry.form === "tank" ? " tank" : ""));
+    var top = el("div", "cap top"); top.appendChild(el("i")); top.appendChild(el("u", null, entry && entry.no ? pad(entry.no) : ""));
     var base = el("div", "cap base"); base.appendChild(el("i"));
     var tube = el("div", "tube");
     var cv = el("canvas");
     tube.appendChild(cv);
     if (entry) tube.appendChild(el("span", "emerging", entry.name));
     c.appendChild(tube); c.appendChild(top); c.appendChild(base);
-    drum.appendChild(c);
+    parent.appendChild(c);
     var feel = (w && w.feel) || (forming ? unformed(forming.feel) : VACANT);
     var bubbles = [];
     for (var b = 0; b < 26; b++) {
       bubbles.push({ x: Math.random(), y: Math.random(), r: 0.6 + Math.random() * 2.6,
         v: 0.03 + Math.random() * 0.09, ph: Math.random() * 6.28 });
     }
-    chambers.push({ el: c, cv: cv, ctx: cv.getContext("2d"), world: w, forming: forming, e: 0.2, feel: feel,
-      a: rgb(feel.liquid[0]), b: rgb(feel.liquid[1]), g: rgb(feel.glow || feel.liquid[0]), bubbles: bubbles });
+    return { el: c, cv: cv, ctx: cv.getContext("2d"), world: w, forming: forming, e: 0.2, feel: feel,
+      no: entry && entry.no, form: entry && entry.form,
+      a: rgb(feel.liquid[0]), b: rgb(feel.liquid[1]), g: rgb(feel.glow || feel.liquid[0]), bubbles: bubbles };
+  }
+  for (var i = 0; i < N; i++) chambers.push(chamber(worlds[i] || null, drum));
+
+  /* ---------- the shelves ---------- */
+  var shelves = [];
+  var shelfHome = document.getElementById("shelves");
+  (platform.shelves || []).forEach(function (def) {
+    var held = all.filter(function (w) { return w && w.shelf === def.id; });
+    if (!held.length) return;
+    var sec = el("section", "shelf"); sec.setAttribute("aria-label", def.label || "Shelf");
+    var stand = el("div", "stand"); stand.setAttribute("aria-hidden", "true");
+    var plaque = el("div", "plaque");
+    var sh = { def: def, el: sec, host: stand, bays: [], gl: null, hover: -1, inview: false, energy: [], awake: [] };
+    held.forEach(function (w) {
+      var b = chamber(w, stand);
+      sh.bays.push(b);
+      var cap = el("button", "bay-cap"); cap.type = "button";
+      cap.appendChild(el("span", "bay-no", w.no ? pad(w.no) : ""));
+      cap.appendChild(el("span", "bay-name", w.name));
+      cap.setAttribute("aria-label", "Enter " + w.name);
+      cap.addEventListener("click", function () { enterCh(b, rectOf(sh, sh.bays.indexOf(b))); });
+      plaque.appendChild(cap);
+    });
+    sec.appendChild(stand);
+    if (def.label) sec.appendChild(el("p", "shelf-label", def.label));
+    sec.appendChild(plaque);
+    shelfHome.appendChild(sec);
+    sh.attach = function (r) { sh.gl = r; stand.classList.add("gl"); r.size(); };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) { sh.inview = es[0].intersectionRatio > 0.55; sh.onscreen = es[0].isIntersecting; },
+        { threshold: [0, 0.55, 0.6] }).observe(stand);
+    } else { sh.inview = sh.onscreen = true; }
+    function at(ev) {
+      var r = stand.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top, rs = regionsOf(sh);
+      for (var k = 0; k < rs.length; k++) if (x >= rs[k].left && x <= rs[k].right && y >= rs[k].top - 20 && y <= rs[k].bottom) return k;
+      return -1;
+    }
+    stand.addEventListener("pointermove", function (ev) { if (ev.pointerType === "mouse") sh.hover = at(ev); });
+    stand.addEventListener("pointerleave", function () { sh.hover = -1; });
+    stand.addEventListener("click", function (ev) { var k = at(ev); if (k >= 0) enterCh(sh.bays[k], rectOf(sh, k)); });
+    shelves.push(sh);
+  });
+  function regionsOf(sh) {
+    if (sh.gl) return sh.gl.regions();
+    var r0 = sh.host.getBoundingClientRect();
+    return sh.bays.map(function (b) { var r = b.el.getBoundingClientRect();
+      return { left: r.left - r0.left, right: r.right - r0.left, top: r.top - r0.top, bottom: r.bottom - r0.top }; });
+  }
+  function rectOf(sh, k) {
+    var r0 = sh.host.getBoundingClientRect(), g = regionsOf(sh)[k];
+    return { left: r0.left + g.left, top: r0.top + g.top, width: g.right - g.left, height: g.bottom - g.top };
   }
 
   var R = 0, gl = null;
@@ -89,6 +143,10 @@
     var cw = drum.offsetWidth;
     R = Math.round((cw * 1.95) / (2 * Math.tan(Math.PI / N)));
     var dpr = Math.min(2, window.devicePixelRatio || 1);
+    shelves.forEach(function (sh) { sh.bays.forEach(function (ch) {
+      var r = ch.cv.parentNode; ch.w = r.clientWidth; ch.h = r.clientHeight;
+      ch.cv.width = Math.round(ch.w * dpr); ch.cv.height = Math.round(ch.h * dpr); ch.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }); });
     chambers.forEach(function (ch, idx) {
       var r = ch.cv.parentNode;
       ch.w = r.clientWidth; ch.h = r.clientHeight;
@@ -151,7 +209,8 @@
     shown = idx;
     var w = chambers[idx].world, fm = chambers[idx].forming;
     readout.textContent = "";
-    readout.appendChild(el("p", "r-num", "Chamber " + pad(idx + 1) + (w && w.inscription ? " · " + w.inscription : "")));
+    var no = chambers[idx].no;
+    readout.appendChild(el("p", "r-num", (no ? pad(no) : "—") + (w && w.inscription ? " · " + w.inscription : "")));
     if (fm) {
       readout.appendChild(el("p", "r-name forming", fm.name));
       readout.appendChild(el("p", "r-state", "Forming"));
@@ -226,7 +285,7 @@
       var ch = chambers[i];
       var d = Math.abs(mod(i - rot + N / 2) - N / 2);
       var vis = d < 1.75;
-      var awake = !!ch.world && i === f && settled && (hovering || !hoverable || entered);
+      var awake = !!ch.world && i === f && settled && (hovering || !hoverable || entered === ch);
       if (awake !== ch.awake) { ch.awake = awake; ch.el.classList.toggle("awake", awake); }
       var stir = !!ch.forming && i === f && settled && (hovering || !hoverable);
       var want = ch.world ? (awake ? 1 : 0.42) : ch.forming ? (stir ? 0.47 : 0.33) : 0.14;
@@ -237,6 +296,18 @@
       ch.el.style.visibility = vis ? "visible" : "hidden";
       if (vis && !entered) draw(ch, t, reduce ? 0 : dt * 10);
     }
+    shelves.forEach(function (sh) {
+      for (var k = 0; k < sh.bays.length; k++) {
+        var b = sh.bays[k];
+        var aw = !!b.world && (hoverable ? sh.hover === k : sh.inview) || (entered && entered === b);
+        if (aw !== b.awake) { b.awake = aw; b.el.classList.toggle("awake", aw); }
+        b.e += ((aw ? 1 : 0.42) - b.e) * (1 - Math.exp(-dt * 2.6));
+        sh.energy[k] = b.e; sh.awake[k] = aw;
+        if (!sh.gl && sh.onscreen && !entered) draw(b, t, reduce ? 0 : dt * 10);
+      }
+      if (sh.gl && sh.onscreen && !document.hidden && !(entered && worldEl.classList.contains("settled")))
+        sh.gl.render({ dt: reduce ? 0 : dt, energy: sh.energy, awake: sh.awake });
+    });
     if (gl && onscreen && !(entered && worldEl.classList.contains("settled"))) {
       gl.render({ dt: reduce ? 0 : dt, rot: rot, energy: energy, awake: awakeNow, near: near });
     }
@@ -245,7 +316,7 @@
 
   /* the three-dimensional chambers (chambers3d.js) attach here when WebGL is there */
   window.LP = {
-    ring: ring, count: N, chambers: chambers,
+    ring: ring, count: N, chambers: chambers, shelves: shelves,
     bleed: function () { return parseFloat(getComputedStyle(ring).marginLeft) * -1 || 0; },
     attach: function (r) { gl = r; ring.classList.add("gl"); r.size(); }
   };
@@ -253,11 +324,11 @@
   /* ---------- entering a world: it takes the whole screen ---------- */
   var worldEl = document.getElementById("world");
   var lastFocus = null;
-  function enter(idx) {
-    var ch = chambers[idx], w = ch.world;
+  function enter(idx) { enterCh(chambers[idx], chambers[idx].el.getBoundingClientRect()); }
+  function enterCh(ch, r) {
+    var w = ch.world;
     if (!w || entered) return;
     var f = w.feel || {};
-    var r = ch.el.getBoundingClientRect();
     worldEl.style.setProperty("--ox", (r.left + r.width / 2) + "px");
     worldEl.style.setProperty("--oy", (r.top + r.height / 2) + "px");
     worldEl.style.setProperty("--w-ground", f.ground || (f.liquid && f.liquid[1]) || "#111");
@@ -277,7 +348,7 @@
     });
     lastFocus = document.activeElement;
     worldEl.hidden = false;
-    entered = true;
+    entered = ch;
     void worldEl.offsetWidth;
     worldEl.classList.add("open");
     setTimeout(function () { if (entered) worldEl.classList.add("settled"); }, 1000);
@@ -301,7 +372,10 @@
   function ready() {
     boot.classList.add("done");
     var id = (location.hash || "").slice(1);
-    worlds.forEach(function (w, idx) { if (w && id && w.id === id) { target = rot = idx; shown = -1; showReadout(); enter(idx); } });
+    if (!id) return;
+    worlds.forEach(function (w, idx) { if (w && w.id === id && !w.state) { target = rot = idx; shown = -1; showReadout(); enter(idx); } });
+    shelves.forEach(function (sh) { sh.bays.forEach(function (b, k) { if (b.world && b.world.id === id) {
+      sh.el.scrollIntoView({ block: "center" }); setTimeout(function () { enterCh(b, rectOf(sh, k)); }, 60); } }); });
   }
   var seen = false;
   try { seen = sessionStorage.getItem("lp.on") === "1"; sessionStorage.setItem("lp.on", "1"); } catch (e) {}

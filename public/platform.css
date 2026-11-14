@@ -106,6 +106,20 @@ a.w-door:hover{background:var(--w-ink,#fff);color:var(--w-ground,#111)}
 .w-back:hover{opacity:1}
 
 /* ---------- a new gravity centre, and sending word ---------- */
+.shelf{position:relative;padding:0 var(--gutter) clamp(24px,5vh,56px)}
+.stand{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:clamp(18px,6vw,60px);min-height:calc(var(--ch) + 110px);padding-top:30px;cursor:default}
+.stand .chamber{position:relative;inset:auto;width:var(--cw);height:calc(var(--ch) + 56px)}
+.stand .chamber.tank{width:min(calc(var(--cw) * 3.3),86vw)}
+.stand .chamber.tank .tube{border-radius:calc(var(--cw) * .5)}
+.stand.gl{margin:0 calc(-1 * var(--gutter));height:max(calc(var(--ch) + 110px),62svh);cursor:pointer}
+.stand.gl .chamber{display:none}
+.stand canvas.gl{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 8%,#000 92%,transparent 100%)}
+.shelf-label{position:absolute;left:var(--gutter);bottom:clamp(24px,5vh,56px);font-size:9px;letter-spacing:.42em;text-transform:uppercase;color:#3b3d42}
+.plaque{display:flex;justify-content:center;gap:clamp(24px,8vw,90px);margin-top:4px}
+.bay-cap{background:none;border:0;padding:6px 10px;cursor:pointer;display:flex;gap:14px;align-items:baseline;color:var(--silver);font:inherit}
+.bay-no{font-size:10px;letter-spacing:.3em;color:var(--steel)}
+.bay-name{font-size:12px;letter-spacing:.32em;text-transform:uppercase;transition:color .3s}
+.bay-cap:hover .bay-name,.bay-cap:focus-visible .bay-name{color:var(--white)}
 .word{padding:clamp(56px,11vh,120px) var(--gutter);border-top:1px solid var(--hair);display:flex;justify-content:flex-end}
 .word-in{width:min(100%,54ch)}
 .word h2{margin:0 0 22px;font-size:clamp(18px,3.4vw,30px);font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--white)}

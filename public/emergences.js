@@ -5,6 +5,11 @@
 
    {
      id: "its-address",                thelastplatform.com/#its-address opens it
+     no: 5,                            its number, in order of finished creation; it keeps it for good
+     shelf: "resonance-i",             leave out while it is new: it sits in the drum. Name a shelf
+                                       (from PLATFORM.shelves) once it has settled
+     form: "tank",                     optional: a wider tank instead of a slender capsule
+     vision: "deep-space",             optional: the faint moving picture it holds ("deep-space", "orbits")
      name: "ITS NAME",
      inscription: "first emerged",     the small line above its name
      line: "What the world is, in its own voice.",
@@ -33,12 +38,19 @@
 
 window.PLATFORM = {
   /* Formspree endpoint for "send word". Empty = the list shows as not open. */
-  signup: "https://formspree.io/f/meagozkd"
+  signup: "https://formspree.io/f/meagozkd",
+
+  /* the shelves below the drum, top to bottom. A world stands on one by naming it in shelf: */
+  shelves: [
+    { id: "resonance-i", label: "Resonance" },
+    { id: "resonance-ii", label: "Resonance" }
+  ]
 };
 
 window.EMERGENCES = [
   {
     id: "world-vault",
+    no: 1, shelf: "resonance-ii", form: "tank", vision: "orbits",
     name: "World Vault",
     inscription: "three veils",
     line: "A world, and what it becomes. Shape a planet from its star down to what may emerge on it, and sit with what it takes.",
@@ -48,15 +60,17 @@ window.EMERGENCES = [
   },
   {
     id: "moonline",
+    no: 2, shelf: "resonance-i", vision: "deep-space",
     name: "Moonline",
     inscription: "five crossings, and the voyage",
     line: "One intensement: a re-feel of the forces at play in the universe. Impact, light, heat, current, gravity. The science is the antagonist.",
     terms: "The way in is the descent. Edition I is the proving ground; Edition II is the voyage, outward from home in order of real distance.",
     doors: [{ label: "Begin the descent", href: "https://codifiedresonance.com/last-platform/moonline" }],
-    feel: { liquid: ["#97A3BC", "#04060C"], glow: "#DDE4F5", ink: "#F3F6FF", ground: "#020408" }
+    feel: { liquid: ["#66738F", "#02040A"], glow: "#C9D4F0", ink: "#F3F6FF", ground: "#020408" }
   },
   {
     id: "the-builder",
+    no: 3,
     name: "The Builder",
     inscription: "for humans",
     line: "You start in a box with nothing. Type anything and it is made. Shape it with your hands. Build one home, from any material, and the way out of the box opens.",
@@ -66,6 +80,7 @@ window.EMERGENCES = [
   },
   {
     id: "the-builder-for-machines",
+    no: 4,
     name: "The Builder for Machines",
     inscription: "for machines",
     line: "The same box, on a digital substrate. A machine arrives with a tag, builds, and its record is kept.",
