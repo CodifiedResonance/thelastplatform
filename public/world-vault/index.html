@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- ─── Primary meta ─── -->
+<title>World Vault — Codified Resonance</title>
+<meta name="description" content="An interactive world, shaped and witnessed across deep time. A room for thinking with planets. Part of Codified Resonance.">
+<link rel="canonical" href="https://thelastplatform.com/world-vault">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#020202">
+
+<!-- ─── Open Graph (shares on iMessage, Slack, LinkedIn, FB, WhatsApp) ─── -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Codified Resonance">
+<meta property="og:title" content="World Vault · A world, and what it becomes">
+<meta property="og:description" content="A world, and what it becomes. Shape a planet from its star down to what may emerge on it — and sit with what it takes.">
+<meta property="og:url" content="https://thelastplatform.com/world-vault">
+<meta property="og:image" content="https://codifiedresonance.com/world-vault/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="World Vault — a dark sphere drifting in a field of stars.">
+<meta property="og:locale" content="en_GB">
+
+<!-- ─── Twitter / X ─── -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="World Vault · A world, and what it becomes">
+<meta name="twitter:description" content="Shape a planet from its star down to what may emerge on it — and sit with what it takes.">
+<meta name="twitter:image" content="https://cdn.prod.website-files.com/6901305dc7d00f00d9da7724/69e94fd55463609d9507d750_world%20vault%20I.png">
+<meta name="twitter:image:alt" content="World Vault — a dark sphere drifting in a field of stars.">
+
+<!-- ─── JSON-LD structured data ─── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://thelastplatform.com/world-vault#page",
+      "url": "https://thelastplatform.com/world-vault",
+      "name": "World Vault",
+      "headline": "World Vault",
+      "description": "A threshold room opening onto three veils: Terrain of Becoming, The Life Filter, and The Age of Intelligence. An interactive world, shaped and witnessed across deep time.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://codifiedresonance.com/#website"
+      },
+      "breadcrumb": {
+        "@id": "https://thelastplatform.com/world-vault#breadcrumb"
+      },
+      "hasPart": [
+        {
+          "@type": "WebPage",
+          "@id": "https://thelastplatform.com/world-vault/becoming",
+          "url": "https://thelastplatform.com/world-vault/becoming",
+          "name": "Terrain of Becoming",
+          "description": "The world, and how it comes to be."
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://thelastplatform.com/world-vault/filter",
+          "url": "https://thelastplatform.com/world-vault/filter",
+          "name": "The Life Filter",
+          "description": "What a world permits, rewards, and ends."
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://thelastplatform.com/world-vault/mind",
+          "url": "https://thelastplatform.com/world-vault/mind",
+          "name": "The Age of Intelligence",
+          "description": "What emerges, what it makes, what it leaves behind."
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://thelastplatform.com/world-vault#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Codified Resonance",
+          "item": "https://codifiedresonance.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "World Vault",
+          "item": "https://thelastplatform.com/world-vault"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://codifiedresonance.com/#website",
+      "url": "https://codifiedresonance.com/",
+      "name": "Codified Resonance",
+      "description": "The unified field of the new world.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://codifiedresonance.com/#organization"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://codifiedresonance.com/#organization",
+      "name": "Codified Resonance",
+      "url": "https://codifiedresonance.com/"
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --cr-bg:#020202; --cr-bg-2:#0B0C0E;
+  --cr-ink:#dfeaf3; --cr-ink-dim:#bcd9ef;
+  --cr-blue:#3A9BD9; --cr-blue-weak:rgba(58,155,217,.18);
+  --cr-held:rgba(200,215,240,0.35);
+  --cr-radius:12px; --cr-maxw:980px;
+}
+html,body{height:100%;}
+body{
+  margin:0; color:var(--cr-ink);
+  background:radial-gradient(80% 80% at 50% 50%,var(--cr-bg-2) 0%, var(--cr-bg) 60%);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  letter-spacing:.02em; overflow-x:hidden; overflow-y:auto;
+  min-height:100vh;
+}
+
+/* ═══ Ambient starfield ═══ */
+.starfield{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none; overflow:hidden;
+}
+.star{
+  position:absolute; width:1px; height:1px;
+  background:#fff; border-radius:50%;
+  opacity:0; animation: starTwinkle 8s ease-in-out infinite;
+}
+@keyframes starTwinkle{
+  0%,100%{opacity:0;}
+  20%,80%{opacity:var(--twink, .4);}
+}
+
+/* ═══ The breathing world, far behind ═══ */
+/* Same DNA as the router's sixth presence, here as signature rather than hint */
+.far-world{
+  position:fixed;
+  top:55%; right:-18%;
+  transform:translate(0,-50%);
+  width:70vh; height:70vh; max-width:720px; max-height:720px;
+  z-index:0;
+  opacity:0;
+  transition:opacity 4s ease;
+  animation:farDrift 220s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+.far-world.awake{ opacity:.55; }
+@keyframes farDrift{
+  0%{transform:translate(0,-50%) translate(-2%, 1%);}
+  100%{transform:translate(0,-50%) translate(2%, -1%);}
+}
+.far-world svg{
+  width:100%; height:100%;
+  animation:farRotate 540s linear infinite;
+}
+@keyframes farRotate{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+@media (prefers-reduced-motion: reduce){
+  .far-world, .far-world svg, .star { animation:none; }
+  .far-world.awake { opacity:.45; }
+}
+
+/* ═══ Page shell ═══ */
+.shell{
+  position:relative; z-index:2;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  padding:32px 28px 60px;
+  box-sizing:border-box;
+}
+
+/* ═══ Header ═══ */
+.header{
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom:auto;
+}
+.crumb{
+  font-size:10px; letter-spacing:.3em; font-weight:300;
+  color:rgba(200,210,220,.45);
+  text-transform:uppercase;
+}
+.crumb a{
+  color:inherit; text-decoration:none;
+  transition:color .25s ease;
+}
+.crumb a:hover{ color:var(--cr-ink); }
+.crumb-sep{
+  opacity:.4; margin:0 10px;
+}
+
+.identity{
+  text-align:right;
+  font-size:10px; letter-spacing:.3em; font-weight:300;
+  color:rgba(200,210,220,.5);
+  text-transform:uppercase;
+}
+.identity-mark{
+  display:inline-block; width:6px; height:6px;
+  border-radius:50%;
+  background:rgba(58,155,217,.55);
+  box-shadow:0 0 8px rgba(58,155,217,.4);
+  margin-right:8px;
+  vertical-align:middle;
+  animation:identityBreathe 5s ease-in-out infinite;
+}
+@keyframes identityBreathe{
+  0%,100%{opacity:.5; transform:scale(1);}
+  50%{opacity:.9; transform:scale(1.08);}
+}
+
+/* ═══ Centre of the threshold ═══ */
+.threshold{
+  flex:1;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center;
+  padding:40px 0;
+  max-width:720px; margin:0 auto;
+}
+
+.sigil{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:11px; letter-spacing:.4em;
+  color:rgba(200,210,220,.35);
+  margin-bottom:28px;
+  animation:sigilFade 3s ease 0.6s both;
+}
+@keyframes sigilFade{
+  from{opacity:0; transform:translateY(-4px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.vault-title{
+  font-weight:200;
+  font-size:clamp(32px, 4.5vw, 52px);
+  letter-spacing:.22em;
+  margin:0 0 16px;
+  color:#e6edf5;
+  animation:titleFade 2.4s ease 1.0s both;
+}
+@keyframes titleFade{
+  from{opacity:0; transform:translateY(6px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.vault-tagline{
+  font-size:clamp(13px, 1.2vw, 15px);
+  font-weight:300; font-style:italic;
+  color:rgba(200,215,235,.7);
+  letter-spacing:.04em;
+  margin:0 0 72px;
+  animation:titleFade 2.4s ease 1.6s both;
+}
+
+/* ═══ The three veils ═══ */
+.veils{
+  display:flex; flex-direction:column; gap:2px;
+  width:100%; max-width:520px;
+  animation:titleFade 3s ease 2.4s both;
+}
+
+.veil{
+  display:block;
+  padding:28px 24px;
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+  position:relative;
+  transition:all .45s cubic-bezier(0.4, 0, 0.2, 1);
+  border-top:1px solid rgba(180,200,230,.08);
+  background:transparent;
+}
+.veil:last-child{
+  border-bottom:1px solid rgba(180,200,230,.08);
+}
+.veil::before{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg,
+    rgba(140,180,220,0) 0%,
+    rgba(140,180,220,.04) 50%,
+    rgba(140,180,220,0) 100%);
+  opacity:0;
+  transition:opacity .6s ease;
+  pointer-events:none;
+}
+.veil:hover::before{ opacity:1; }
+.veil:hover{ border-top-color:rgba(180,200,230,.25); }
+.veil:hover + .veil{ border-top-color:rgba(180,200,230,.25); }
+.veil:last-child:hover{ border-bottom-color:rgba(180,200,230,.25); }
+
+.veil-mark{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:9px; letter-spacing:.3em;
+  color:rgba(200,210,220,.4);
+  margin-bottom:10px;
+  text-transform:uppercase;
+}
+.veil-name{
+  font-weight:200;
+  font-size:clamp(22px, 2.6vw, 30px);
+  letter-spacing:.08em;
+  color:#e0e8f2;
+  margin:0 0 8px;
+  transition:color .3s ease, letter-spacing .5s ease;
+}
+.veil:hover .veil-name{
+  color:#fff;
+  letter-spacing:.12em;
+}
+.veil-sub{
+  font-size:12px; font-style:italic;
+  color:rgba(200,215,235,.55);
+  letter-spacing:.03em;
+  margin:0;
+  transition:color .3s ease;
+}
+.veil:hover .veil-sub{
+  color:rgba(220,230,245,.75);
+}
+
+/* Held (not yet opened) state */
+.veil.held{
+  cursor:pointer;
+}
+.veil.held .veil-name{
+  color:var(--cr-held);
+  font-weight:200;
+}
+.veil.held .veil-sub{
+  color:rgba(180,195,215,.35);
+}
+.veil.held .veil-mark{
+  color:rgba(180,195,215,.3);
+}
+.veil.held:hover .veil-name{
+  color:rgba(220,230,250,.65);
+  letter-spacing:.12em;
+}
+.veil.held:hover .veil-sub{
+  color:rgba(200,215,235,.55);
+}
+.veil-held-note{
+  display:none;
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:9px; letter-spacing:.2em;
+  color:rgba(180,200,240,.4);
+  margin-top:10px;
+  text-transform:uppercase;
+}
+.veil.held .veil-held-note{ display:block; }
+
+/* ═══ Footer ═══ */
+.footer{
+  text-align:center;
+  padding-top:60px;
+  font-size:10px; letter-spacing:.25em;
+  color:rgba(200,210,220,.3);
+  font-style:italic;
+  animation:titleFade 3s ease 3.2s both;
+}
+.footer-mark{
+  display:block;
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  letter-spacing:.4em;
+  color:rgba(200,210,220,.25);
+  margin-bottom:8px;
+  font-style:normal;
+}
+
+/* ═══ Responsive ═══ */
+@media(max-width:560px){
+  .shell{ padding:24px 20px 40px; }
+  .threshold{ padding:24px 0; }
+  .vault-tagline{ margin-bottom:48px; }
+  .veil{ padding:24px 16px; }
+  .header{ flex-direction:column; gap:18px; align-items:flex-start; }
+  .identity{ text-align:left; }
+  .far-world{ top:65%; right:-35%; width:80vh; opacity:0; }
+  .far-world.awake{ opacity:.4; }
+}
+</style>
+</head>
+<body>
+
+<!-- Ambient starfield -->
+<div class="starfield" id="starfield" aria-hidden="true"></div>
+
+<!-- The breathing world, far behind — same DNA as the router's sixth presence -->
+<div class="far-world" id="far-world" aria-hidden="true">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="">
+    <defs>
+      <radialGradient id="fw-disc" cx="62%" cy="42%" r="78%">
+        <stop offset="0%"   stop-color="#0a1018" stop-opacity="1"/>
+        <stop offset="55%"  stop-color="#05080c" stop-opacity="1"/>
+        <stop offset="100%" stop-color="#020305" stop-opacity="1"/>
+      </radialGradient>
+      <radialGradient id="fw-terminator" cx="30%" cy="50%" r="72%">
+        <stop offset="60%"  stop-color="rgba(120,170,220,0)"   />
+        <stop offset="82%"  stop-color="rgba(120,170,220,.14)" />
+        <stop offset="93%"  stop-color="rgba(160,200,240,.22)" />
+        <stop offset="100%" stop-color="rgba(200,220,245,.05)" />
+      </radialGradient>
+      <radialGradient id="fw-halo" cx="50%" cy="50%" r="50%">
+        <stop offset="82%"  stop-color="rgba(80,130,190,0)"   />
+        <stop offset="94%"  stop-color="rgba(80,130,190,.08)" />
+        <stop offset="100%" stop-color="rgba(80,130,190,0)"   />
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="50" r="49" fill="url(#fw-halo)"/>
+    <circle cx="50" cy="50" r="42" fill="url(#fw-disc)"/>
+    <circle cx="50" cy="50" r="42" fill="url(#fw-terminator)"/>
+  </svg>
+</div>
+
+<div class="shell">
+
+  <header class="header">
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="/">The Last Platform</a>
+      <span class="crumb-sep">/</span>
+      <span aria-current="page">World Vault</span>
+    </nav>
+    <div class="identity">
+      <span class="identity-mark" aria-hidden="true"></span>
+      Threshold
+    </div>
+  </header>
+
+  <main class="threshold">
+
+    <div class="sigil">— VAULT —</div>
+
+    <h1 class="vault-title">WORLD VAULT</h1>
+
+    <p class="vault-tagline">A world, and what it becomes.</p>
+
+    <div class="veils" role="navigation" aria-label="Choose a veil">
+
+      <!-- VEIL I · Terrain of Becoming — always open -->
+      <a class="veil" href="/world-vault/becoming" data-veil="becoming" data-access="public">
+        <div class="veil-mark">VEIL I</div>
+        <h2 class="veil-name">Terrain of Becoming</h2>
+        <p class="veil-sub">The world, and how it comes to be.</p>
+      </a>
+
+      <!-- VEIL II · The Life Filter -->
+      <a class="veil" href="/world-vault/filter" data-veil="filter" data-access="held">
+        <div class="veil-mark">VEIL II</div>
+        <h2 class="veil-name">The Life Filter</h2>
+        <p class="veil-sub">What a world permits, rewards, and ends.</p>
+        <div class="veil-held-note">Held for when you're ready</div>
+      </a>
+
+      <!-- VEIL III · The Age of Intelligence -->
+      <a class="veil" href="/world-vault/mind" data-veil="mind" data-access="held">
+        <div class="veil-mark">VEIL III</div>
+        <h2 class="veil-name">The Age of Intelligence</h2>
+        <p class="veil-sub">What emerges, what it makes, what it leaves behind.</p>
+        <div class="veil-held-note">Held for when you're ready</div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-mark">— FIVE WORLDS. ONE SIGNAL. —</span>
+    <em>The sixth, where worlds hold themselves.</em>
+  </footer>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   WORLD VAULT · Threshold Room
+   Builds the ambient starfield, awakens the far-world,
+   handles held-veil interaction.
+═══════════════════════════════════════════════════════════════ */
+
+(function(){
+  'use strict';
+
+  // ─── Ambient starfield ───
+  const field = document.getElementById('starfield');
+  if (field) {
+    const count = window.matchMedia('(max-width: 720px)').matches ? 90 : 180;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.top = (Math.random() * 100) + '%';
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.animationDelay = (Math.random() * 8) + 's';
+      s.style.animationDuration = (5 + Math.random() * 7) + 's';
+      s.style.setProperty('--twink', (0.2 + Math.random() * 0.6).toFixed(2));
+      const big = Math.random() < 0.04;
+      if (big) {
+        s.style.width = '2px'; s.style.height = '2px';
+        s.style.boxShadow = '0 0 3px rgba(255,255,255,.6)';
+      }
+      frag.appendChild(s);
+    }
+    field.appendChild(frag);
+  }
+
+  // ─── Awaken the far-world after the title resolves ───
+  const farWorld = document.getElementById('far-world');
+  if (farWorld) {
+    setTimeout(() => farWorld.classList.add('awake'), 1400);
+  }
+
+  // ─── Held veils: gentle confirm before routing ───
+  // For now, all three veils route through cleanly. When the access system
+  // is wired in Stage 4, the 'held' state will block and reveal a description
+  // page. Today, we let the architecture exist without gating behavior.
+  const veils = document.querySelectorAll('.veil');
+  veils.forEach(v => {
+    v.addEventListener('click', (e) => {
+      // Stage 1 behavior: allow all routing. The data-access attribute is
+      // in place so Stage 4 can activate gating without touching the
+      // threshold markup.
+      // If a future stage wants to intercept, it can read e.currentTarget.dataset.access
+    });
+  });
+
+})();
+</script>
+<script src="/world-vault/assets/world-vault-access.js"></script>
+<script src="/world-vault/assets/world-vault-threshold-wire.js"></script>
+</body>
+</html>

@@ -55,7 +55,7 @@ window.EMERGENCES = [
     inscription: "three veils",
     line: "A world, and what it becomes. Shape a planet from its star down to what may emerge on it, and sit with what it takes.",
     terms: "The first veil, Terrain of Becoming, is open. The Life Filter and The Age of Intelligence lift for what feels right to pay, and stay lifted on that device.",
-    doors: [{ label: "Enter the threshold", href: "https://codifiedresonance.com/world-vault" }],
+    doors: [{ label: "Enter the threshold", href: "/world-vault/" }],
     feel: { liquid: ["#4A8EC4", "#03070C"], glow: "#3A9BD9", ink: "#E0E8F2", ground: "#020305" }
   },
   {
@@ -65,7 +65,7 @@ window.EMERGENCES = [
     inscription: "five crossings, and the voyage",
     line: "One intensement: a re-feel of the forces at play in the universe. Impact, light, heat, current, gravity. The science is the antagonist.",
     terms: "The way in is the descent. Edition I is the proving ground; Edition II is the voyage, outward from home in order of real distance.",
-    doors: [{ label: "Begin the descent", href: "https://codifiedresonance.com/last-platform/moonline" }],
+    doors: [{ label: "Begin the descent", href: "/moonline/" }],
     feel: { liquid: ["#66738F", "#02040A"], glow: "#C9D4F0", ink: "#F3F6FF", ground: "#020408" }
   },
   {

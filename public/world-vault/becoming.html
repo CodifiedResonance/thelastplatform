@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Terrain of Becoming — World Vault · Codified Resonance</title>
+<meta name="description" content="Shape a world from its star down to its surface. The first veil of the World Vault — a room for thinking with planets. Part of Codified Resonance.">
+<link rel="canonical" href="https://thelastplatform.com/world-vault/becoming">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#020202">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Codified Resonance">
+<meta property="og:title" content="Terrain of Becoming — World Vault">
+<meta property="og:description" content="The world, and how it comes to be. Shape a planet across deep time. The first veil of the World Vault.">
+<meta property="og:url" content="https://thelastplatform.com/world-vault/becoming">
+<meta property="og:image" content="https://codifiedresonance.com/world-vault/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Terrain of Becoming — World Vault">
+<meta name="twitter:description" content="The world, and how it comes to be. Shape a planet across deep time.">
+<meta name="twitter:image" content="https://codifiedresonance.com/world-vault/og.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebPage", "@id": "https://thelastplatform.com/world-vault/becoming#page", "url": "https://thelastplatform.com/world-vault/becoming", "name": "Terrain of Becoming", "description": "The world, and how it comes to be.", "inLanguage": "en", "isPartOf": { "@id": "https://thelastplatform.com/world-vault#page" } },
+    { "@type": "WebSite", "@id": "https://codifiedresonance.com/#website", "url": "https://codifiedresonance.com/", "name": "Codified Resonance" }
+  ]
+}
+</script>
+<link rel="stylesheet" href="/world-vault/assets/world-vault-core.css">
+<style>
+  .panel {
+    display: grid !important;
+    grid-template-rows: min-content min-content 1fr min-content !important;
+  }
+  .panel .section {
+    grid-row: 1 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .panel .tabs {
+    grid-row: 2 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .panel .tab-body {
+    grid-row: 3 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+  .panel .footer {
+    grid-row: 4 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+</style>
+</head>
+<body data-veil="becoming">
+<!-- Entry curtain — "Becoming arrives" -->
+<div class="entry-curtain" id="entry-curtain">
+  <div class="entry-mark">— VEIL I —</div>
+  <div class="entry-title">TERRAIN OF BECOMING</div>
+  <div class="entry-whisper">The world arrives.</div>
+</div>
+
+<div id="mount"></div>
+
+<a href="/world-vault" class="back-to-threshold" aria-label="Return to threshold" title="Threshold">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.2"/>
+    <rect x="9" y="9" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1.2"/>
+  </svg>
+</a>
+
+<div class="top-left">
+  <div class="brand">WORLD VAULT</div>
+  <div class="sub">VEIL I · TERRAIN OF BECOMING</div>
+</div>
+
+<div class="top-right">
+  <div class="readout"><div class="readout-label">AGE</div><div class="readout-value" id="r-age">0 yr</div></div>
+  <div class="readout"><div class="readout-label">TEMP</div><div class="readout-value" id="r-temp">+15.0 °C</div></div>
+  <div class="readout"><div class="readout-label">HABITABILITY</div><div class="readout-value" id="r-hab">—</div></div>
+  <div class="readout"><div class="readout-label">EPOCH</div><div class="readout-value"><span class="epoch-badge" id="epoch-badge">MAIN SEQUENCE</span></div></div>
+</div>
+
+<div class="oracle" id="oracle" style="display:none">
+  <div class="oracle-mark" id="oracle-mark">ORACLE</div>
+  <div class="oracle-text" id="oracle-text"></div>
+</div>
+
+<div class="timebar" id="timebar"></div>
+
+<div class="library-toggle-wrap" id="library-toggle-wrap">
+  <button class="library-toggle" id="library-toggle" aria-label="Toggle library" title="Vault library">◇</button>
+  <span class="library-count" id="library-count"></span>
+</div>
+
+<div class="library" id="library">
+  <div class="library-head">
+    <div class="library-title">VAULT LIBRARY</div>
+    <div class="library-sub" id="library-sub">— worlds held</div>
+  </div>
+  <div class="library-body" id="library-body"></div>
+</div>
+
+<button class="panel-toggle panel-open" id="panel-toggle" aria-label="Toggle panel" title="Collapse panel">×</button>
+
+<div class="panel" id="panel">
+  <div class="section">
+    <div class="section-head">PRESETS</div>
+    <div class="preset-row" id="presets"></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tab-body" id="tab-body"></div>
+  <div class="footer">
+    <button class="reset-btn" id="reset-terra">◎ reset</button>
+    <button class="save-btn" id="save-btn">◉ save to vault</button>
+  </div>
+</div>
+
+<script src="/world-vault/assets/world-vault-access.js"></script>
+<script src="/world-vault/assets/world-vault-veil-boot.js"></script>
+<script type="module" src="/world-vault/assets/world-vault-core.js"></script>
+</body>
+</html>

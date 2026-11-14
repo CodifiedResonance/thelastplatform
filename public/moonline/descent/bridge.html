@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>moonline · bridge</title></head>
+<body>
+<script>
+/* MOONLINE: the bridge. The worlds live on this origin and keep their lines in this origin's storage; the descent
+   lives on codifiedresonance.com and cannot read it. Loaded unseen by the descent, this page tells it which worlds
+   have a line on this device, so a crossing is remembered however the witness came home (the back button, leave,
+   a direct link). It reads only the names of the worlds. Nothing leaves the device. */
+(function(){
+  var keys=[];
+  try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);var m=/^moonline\.line\.([a-z0-9_-]+)$/.exec(k||'');if(m)keys.push(m[1]);}}catch(e){}
+  try{if(window.parent&&window.parent!==window)window.parent.postMessage({moonline:'lines',keys:keys},'*');}catch(e){}
+})();
+</script>
+</body></html>

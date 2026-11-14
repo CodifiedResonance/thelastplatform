@@ -36,3 +36,13 @@ People insert a location where they can be reached. `PLATFORM.signup` in
 
 Cloudflare Workers static assets, connected to this repo. `wrangler.jsonc`
 serves `public/`. Every push to `main` goes live.
+
+## Worlds that live here
+
+World Vault (`/world-vault/`) and Moonline (`/moonline/`) are copied in from their own repos by
+`tools/import-worlds.py`, which rewrites their codifiedresonance.com addresses to this site:
+
+    python3 tools/import-worlds.py ../moonline ../world-vault-assets
+
+Their repos stay the source: change a world there, run the script, push. World Vault's page shells
+came from Webflow and are kept in `tools/` (the veils and the threshold) for the script to read.
