@@ -29,6 +29,14 @@ def localise(t):
     t = t.replace("https://cdn.jsdelivr.net/gh/CodifiedResonance/world-vault-assets@main/", "/world-vault/assets/")
     t = t.replace("https://codifiedresonance.com/world-vault", SITE + "/world-vault")
     t = t.replace(SITE + "/world-vault/og.png", "https://codifiedresonance.com/world-vault/og.png")   # the image stays where it is
+    # World Vault belongs to the platform now
+    t = t.replace(" · Codified Resonance</title>", " · The Last Platform</title>").replace(" — Codified Resonance</title>", " · The Last Platform</title>")
+    t = t.replace(" Part of Codified Resonance.", "")
+    t = t.replace('content="Codified Resonance"', 'content="The Last Platform"')
+    t = re.sub(r'\{ "@type": "WebSite", "@id": "https://codifiedresonance.com/#website"[^}]*\}',
+               '{ "@type": "WebSite", "@id": "%s/#website", "url": "%s/", "name": "The Last Platform" }' % (SITE, SITE), t)
+    t = t.replace('"@id": "https://codifiedresonance.com/#website"', '"@id": "%s/#website"' % SITE)
+    t = t.replace('"name": "Codified Resonance",\n          "item": "https://codifiedresonance.com/"', '"name": "The Last Platform",\n          "item": "%s/"' % SITE)
     return t
 
 raw = open(os.path.join(HERE, "world-vault-webflow-veils.txt"), encoding="utf-8").read()
@@ -56,7 +64,11 @@ for name, p in zip(names, pages):
 th = open(os.path.join(HERE, "world-vault-webflow-threshold.html"), encoding="utf-8").read()
 th = th.replace("<title>World Vault · Codified Resonance</title>", localise(threshold_head).strip())
 th = th.replace('<a href="/">Codified Resonance</a>', '<a href="/">The Last Platform</a>')
-write(os.path.join(wv, "index.html"), localise(th))
+th = re.sub(r'\s*<footer class="footer">.*?</footer>', '', th, flags=re.S)       # no footer line: the threshold ends on the veils
+th = localise(th)
+th = th.replace('"https://codifiedresonance.com/#organization"', '"%s/#organization"' % SITE).replace('"https://codifiedresonance.com/"', '"%s/"' % SITE)
+th = th.replace('"name": "Codified Resonance"', '"name": "The Last Platform"').replace("The unified field of the new world.", "A new gravity centre.")
+write(os.path.join(wv, "index.html"), th)
 
 # ---------------------------------------------------------------- Moonline
 ml = os.path.join(PUB, "moonline")
@@ -71,6 +83,7 @@ def moon(t):
     t = t.replace("https://codifiedresonance.com/last-platform/moonline", "/moonline/")
     t = t.replace("https://moonline.codifiedresonance.com/", SITE + "/moonline/")
     t = t.replace("fillText('moonline.codifiedresonance.com", "fillText('thelastplatform.com/moonline")
+    t = t.replace("MOONLINE · Codified Resonance", "MOONLINE · The Last Platform")
     t = t.replace("h==='codifiedresonance.com'", "h==='thelastplatform.com'||h==='codifiedresonance.com'")
     return t
 for root, _, files in os.walk(ml):
