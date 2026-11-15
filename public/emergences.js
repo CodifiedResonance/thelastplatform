@@ -73,7 +73,7 @@ window.EMERGENCES = [
     state: "forming",             /* until it is locked in; then remove this and give it no: 3 */
     name: "The Builder",
     inscription: "for humans",
-    line: "You start in a box with nothing. Type anything and it is made. Shape it with your hands. Build one home, from any material, and the way out of the box opens.",
+    line: "You are limited only by your imagination.",
     terms: "Its door is being hung. It opens here.",
     doors: [],                     /* its door goes here once the game is in: { label: "Enter The Builder", href: "/the-builder/" } */
     feel: { liquid: ["#D9D6CF", "#3A3835"], glow: "#F1EEE6", ink: "#161514", ground: "#CFCCC5" }
