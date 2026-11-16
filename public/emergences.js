@@ -15,6 +15,7 @@
      line: "What the world is, in its own voice.",
      terms: "Its own terms: how it is entered, played, paid for.",
      doors: [ { label: "Enter", href: "https://..." } ],
+     straight: true,                   optional: pressing the chamber goes straight through the first door
                                        a door with no href shows as not yet open
      feel: {                           the world's own feeling. The platform stays
        liquid: ["#top", "#bottom"],    black; only the chamber, and then the whole
@@ -42,8 +43,8 @@ window.PLATFORM = {
 
   /* the shelves below the drum, top to bottom. A world stands on one by naming it in shelf: */
   shelves: [
-    { id: "resonance-i", label: "Resonance" },
-    { id: "resonance-ii", label: "Resonance" }
+    { id: "resonance-i" },
+    { id: "resonance-ii" }
   ]
 };
 
@@ -66,6 +67,7 @@ window.EMERGENCES = [
     line: "One intensement: a re-feel of the forces at play in the universe. Impact, light, heat, current, gravity. The science is the antagonist.",
     terms: "The way in is the descent. Edition I is the proving ground; Edition II is the voyage, outward from home in order of real distance.",
     doors: [{ label: "Begin the descent", href: "/moonline/" }],
+    straight: true,               /* pressing it goes straight through its door, no page in between */
     feel: { liquid: ["#66738F", "#02040A"], glow: "#C9D4F0", ink: "#F3F6FF", ground: "#020408" }
   },
   {

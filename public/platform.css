@@ -152,3 +152,6 @@ footer a{color:var(--steel)}
   .wordmark{font-size:19px}
   .wordmark b{text-shadow:0 0 10px rgba(255,255,255,.75),0 0 30px rgba(220,224,230,.4)}
 }
+
+.world.passing .world-in{visibility:hidden}
+.world.instant{transition:none!important}

@@ -334,6 +334,8 @@
     worldEl.style.setProperty("--w-ground", f.ground || (f.liquid && f.liquid[1]) || "#111");
     worldEl.style.setProperty("--w-ink", f.ink || "#fff");
     worldEl.style.setProperty("--w-glow", f.glow || "transparent");
+    var through = w.straight && w.doors && w.doors[0] && w.doors[0].href;
+    worldEl.classList.toggle("passing", !!through);
     document.getElementById("world-insc").textContent = w.inscription || "";
     document.getElementById("world-name").textContent = w.name;
     document.getElementById("world-line").textContent = w.line || "";
@@ -351,6 +353,10 @@
     entered = ch;
     void worldEl.offsetWidth;
     worldEl.classList.add("open");
+    if (through) {                 /* no page in between: the world takes the screen, then you are in it */
+      setTimeout(function () { location.href = through; }, reduce ? 0 : 750);
+      return;
+    }
     setTimeout(function () { if (entered) worldEl.classList.add("settled"); }, 1000);
     document.body.style.overflow = "hidden";
     document.getElementById("world-back").focus({ preventScroll: true });
@@ -366,6 +372,10 @@
     try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
   }
   document.getElementById("world-back").addEventListener("click", leave);
+  /* coming back from a world with the back button: the platform is as you left it */
+  window.addEventListener("pageshow", function (ev) {
+    if (ev.persisted && entered) { worldEl.classList.add("instant"); leave(); setTimeout(function () { worldEl.classList.remove("instant"); }, 50); }
+  });
 
   /* ---------- switching on ---------- */
   var boot = document.getElementById("boot");
