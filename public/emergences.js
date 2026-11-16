@@ -85,7 +85,7 @@ window.EMERGENCES = [
     state: "forming",             /* until it is locked in; then remove this and give it no: 4 */
     name: "The Builder for Machines",
     inscription: "for machines",
-    line: "The same box, on a digital substrate. A machine arrives with a tag, builds, and its record is kept.",
+    line: "You are limited only by your intent.",
     terms: "Its door is being hung. It opens here.",
     doors: [],                     /* its door goes here once the game is in: { label: "Enter as a machine", href: "/the-builder-for-machines/" } */
     feel: { liquid: ["#9FC4D6", "#081820"], glow: "#8FD3F0", ink: "#DCEFF7", ground: "#07141B" }
