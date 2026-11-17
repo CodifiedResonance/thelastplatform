@@ -103,13 +103,13 @@ write(os.path.join(ml, "index.html"), """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MOONLINE · The Last Platform</title>
-<meta name="description" content="Real places in the universe, raced. The forces themselves are the opposition.">
+<meta name="description" content="You cross the universe. It doesn&#39;t know you&#39;re there.">
 <link rel="canonical" href="%(s)s/moonline/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="MOONLINE">
-<meta property="og:description" content="Real places in the universe, raced. The forces themselves are the opposition.">
+<meta property="og:description" content="You cross the universe. It doesn&#39;t know you&#39;re there.">
 <meta property="og:url" content="%(s)s/moonline/">
-<meta property="og:image" content="%(s)s/moonline/og-moonline-2.png">
+<meta property="og:image" content="%(s)s/moonline/og-moonline-3.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:site_name" content="The Last Platform">
