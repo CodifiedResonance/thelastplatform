@@ -89,11 +89,5 @@ window.EMERGENCES = [
     terms: "Its door is being hung. It opens here.",
     doors: [],                     /* its door goes here once the game is in: { label: "Enter as a machine", href: "/the-builder-for-machines/" } */
     feel: { liquid: ["#9FC4D6", "#081820"], glow: "#8FD3F0", ink: "#DCEFF7", ground: "#07141B" }
-  },
-  {
-    id: "footfall",
-    state: "forming",
-    name: "FOOTFALL",
-    feel: { liquid: ["#C9673A", "#1C0805"], glow: "#E2763F" }   /* Proxima's red */
   }
 ];
