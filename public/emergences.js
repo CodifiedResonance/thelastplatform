@@ -43,6 +43,7 @@ window.PLATFORM = {
 
   /* the shelves below the drum, top to bottom. A world stands on one by naming it in shelf: */
   shelves: [
+    { id: "the-builder" },
     { id: "resonance-i" },
     { id: "resonance-ii" }
   ]
@@ -72,22 +73,22 @@ window.EMERGENCES = [
   },
   {
     id: "the-builder",
-    state: "forming",             /* until it is locked in; then remove this and give it no: 3 */
+    no: 3, shelf: "the-builder",
     name: "The Builder",
     inscription: "for humans",
     line: "You are limited only by your imagination.",
-    terms: "Its door is being hung. It opens here.",
-    doors: [],                     /* its door goes here once the game is in: { label: "Enter The Builder", href: "/the-builder/" } */
+    terms: "Its own ground, its own terms. They are set out at its door.",
+    doors: [{ label: "Enter The Builder", href: "https://thebuilderforhumans.com" }],
     feel: { liquid: ["#D9D6CF", "#3A3835"], glow: "#F1EEE6", ink: "#161514", ground: "#CFCCC5" }
   },
   {
     id: "the-builder-for-machines",
-    state: "forming",             /* until it is locked in; then remove this and give it no: 4 */
+    no: 4, shelf: "the-builder",
     name: "The Builder for Machines",
     inscription: "for machines",
     line: "You are limited only by your intent.",
-    terms: "Its door is being hung. It opens here.",
-    doors: [],                     /* its door goes here once the game is in: { label: "Enter as a machine", href: "/the-builder-for-machines/" } */
+    terms: "Its own ground, its own terms. They are set out at its door.",
+    doors: [{ label: "Enter as a machine", href: "https://thebuilderformachines.com" }],
     feel: { liquid: ["#9FC4D6", "#081820"], glow: "#8FD3F0", ink: "#DCEFF7", ground: "#07141B" }
   }
 ];
